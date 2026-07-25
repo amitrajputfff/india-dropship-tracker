@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>India Trending Products Report - {{ report_date }}</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.2rem; }
+  .subtitle { color: #666; margin-top: 0; }
+  h2 { border-bottom: 2px solid #ddd; padding-bottom: 0.3rem; margin-top: 2.5rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  th { background: #f4f4f4; }
+  .score-bar-wrap { background: #eee; border-radius: 4px; width: 120px; height: 10px; display: inline-block; overflow: hidden; }
+  .score-bar { background: #2e7d32; height: 100%; }
+  .badge { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 10px; background: #e3f2fd; color: #1565c0; margin: 0 0.2rem 0.2rem 0; }
+  .badge.trend { background: #fff3e0; color: #e65100; }
+  .badge.sourcing-yes { background: #e8f5e9; color: #2e7d32; }
+  .badge.sourcing-no { background: #ffebee; color: #c62828; }
+  .badge.sourcing-unknown { background: #f0f0f0; color: #777; }
+  .error { color: #c62828; font-size: 0.9rem; }
+  .ok { color: #2e7d32; font-size: 0.9rem; }
+  .muted { color: #888; font-size: 0.85rem; }
+  .trend-terms span { display: inline-block; background: #f0f0f0; padding: 0.2rem 0.6rem; border-radius: 12px; margin: 0.15rem; font-size: 0.9rem; }
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.85rem; color: #777; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #111; color: #eee; }
+    .subtitle, .muted, footer { color: #aaa; }
+    h2 { border-color: #333; }
+    th { background: #1e1e1e; }
+    th, td { border-color: #2a2a2a; }
+    .score-bar-wrap { background: #333; }
+    .badge { background: #123a5c; color: #90caf9; }
+    .badge.trend { background: #4a2c00; color: #ffcc80; }
+    .badge.sourcing-yes { background: #1b3a1e; color: #81c784; }
+    .badge.sourcing-no { background: #4a1414; color: #ef9a9a; }
+    .badge.sourcing-unknown { background: #222; color: #999; }
+    .trend-terms span { background: #222; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Top India Dropshipping Products</h1>
+<p class="subtitle">Generated {{ report_date }} - Amazon.in, Flipkart, Meesho, Myntra &amp; Snapdeal x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products (OnePlus, Jockey, Amazon Brand, etc.) are filtered out first, then every survivor is scored against the standard 13-KPI dropship rubric - only products matching {{ min_kpis }}+ of 13 make this list.</p>
+
+{% macro sourcing_badge(check) -%}
+  {%- if check is none -%}
+    <span class="badge sourcing-unknown">not checked</span>
+  {%- elif check.available -%}
+    <span class="badge sourcing-yes" title="{{ check.sample_titles|join(' | ') }}">found</span>
+  {%- elif check.available is none -%}
+    <span class="badge sourcing-unknown" title="{{ check.error }}">blocked/unknown</span>
+  {%- else -%}
+    <span class="badge sourcing-no">not found</span>
+  {%- endif -%}
+{%- endmacro %}
+
+<h2>Top {{ top_picks|length }} picks passing the {{ min_kpis }}/13 KPI bar</h2>
+<p class="muted">Every candidate is scored against the 13-point rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) - only products matching {{ min_kpis }}+ appear here at all, ranked by KPI count first, then by bestseller rank / cross-platform / Google Trends momentum. It's normal for this list to have fewer than 10 entries on a given day - that's the rubric being strict, not a bug. The Alibaba/AliExpress columns are a supplier-availability gut-check on top of that - a signal to investigate, not an auto-buy decision.</p>
+<table>
+  <tr><th>#</th><th>Product</th><th>KPIs matched</th><th>Momentum score</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr>
+  {% for pick in top_picks %}
+  <tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ pick.title }}</td>
+    <td>
+      <strong>{{ pick.kpi.count }}/13</strong>
+      {% if pick.kpi.source != 'llm' %}<span class="error" title="{{ pick.kpi.source }}">(fallback)</span>{% endif %}<br>
+      {% for k in pick.kpi.matched %}<span class="badge trend">{{ k }}</span>{% endfor %}
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: {{ (pick.score * 100 / (top_picks[0].score if top_picks else 1)) | round(0, 'floor') }}%;"></div></div>
+      {{ pick.score }}
+    </td>
+    <td>{% for s in pick.sources %}<span class="badge">{{ s }}</span>{% endfor %}</td>
+    <td>{% if pick.trend_match %}<span class="badge trend">{{ pick.trend_match }}</span>{% else %}-{% endif %}</td>
+    <td>{{ sourcing_badge(pick.sourcing.alibaba if pick.sourcing else none) }}</td>
+    <td>{{ sourcing_badge(pick.sourcing.aliexpress if pick.sourcing else none) }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="8">No products passed the {{ min_kpis }}/13 KPI bar today - check the source status below (a source outage means fewer candidates to score, not that nothing qualified).</td></tr>
+  {% endfor %}
+</table>
+
+<h2>Google Trends - India (today)</h2>
+<div class="trend-terms">
+  {% for term in trending_terms %}<span>{{ term }}</span>{% else %}<span class="error">Google Trends fetch failed today.</span>{% endfor %}
+</div>
+
+<h2>Amazon.in bestsellers by category</h2>
+{% for result in amazon_results %}
+  <h3>{{ result.category }}
+    {% if result.error %}<span class="error">- {{ result.error }}</span>{% else %}<span class="ok">- ok</span>{% endif %}
+  </h3>
+  {% if result.products %}
+  <table>
+    <tr><th>Rank</th><th>Title</th></tr>
+    {% for item in result.products %}
+    <tr><td>{{ item.rank }}</td><td>{{ item.title }}</td></tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+{% endfor %}
+
+{% macro keyword_source_section(title, note, results) %}
+<h2>{{ title }}</h2>
+<p class="muted">{{ note }}</p>
+{% for result in results %}
+  <h3>"{{ result.keyword }}"
+    {% if result.error %}<span class="error">- {{ result.error }}</span>{% else %}<span class="ok">- ok</span>{% endif %}
+  </h3>
+  {% if result.products %}
+  <table>
+    <tr><th>Rank</th><th>Title</th></tr>
+    {% for item in result.products %}
+    <tr><td>{{ item.rank }}</td><td>{{ item.title }}</td></tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+{% endfor %}
+{% endmacro %}
+
+{{ keyword_source_section(
+  "Flipkart - popularity search by keyword",
+  "No dedicated bestseller page on Flipkart, so this approximates it via popularity-sorted search - cross-check before trusting on its own.",
+  flipkart_results
+) }}
+
+{{ keyword_source_section(
+  "Meesho - search by keyword",
+  "Best-effort scrape of a JS-heavy storefront - check the ok/error status per keyword before trusting a day's results.",
+  meesho_results
+) }}
+
+{{ keyword_source_section(
+  "Myntra - search by keyword (fashion)",
+  "Fashion-only catalog, so this uses its own keyword list rather than the general one. Best-effort scrape of a JS-heavy storefront.",
+  myntra_results
+) }}
+
+{{ keyword_source_section(
+  "Snapdeal - search by keyword",
+  "Best-effort scrape of a JS-heavy storefront - check the ok/error status per keyword before trusting a day's results.",
+  snapdeal_results
+) }}
+
+<footer>
+  <p><strong>Methodology &amp; caveats:</strong> Amazon/Flipkart/Meesho/Myntra/Snapdeal data is scraped from public pages (none of them offer a free trending-products API), so any section can break silently if that site changes its layout - check the "ok"/error status per section above before trusting a day's report. Google Trends uses its public RSS feed. Cross-platform "top picks" scoring is a heuristic (token overlap between listing titles and trend terms), not a guarantee of demand. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
+</footer>
+
+</body>
+</html>
