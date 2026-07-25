@@ -23,6 +23,7 @@ from config import (
     CANDIDATE_POOL_SIZE,
     ENABLED_SOURCES,
     FLIPKART_KEYWORDS,
+    FUN_PRODUCT_KEYWORDS,
     MEESHO_KEYWORDS,
     MYNTRA_KEYWORDS,
     OUTPUT_DIR,
@@ -31,7 +32,7 @@ from config import (
     TOP_PICKS_COUNT,
 )
 from kpi_scoring import MIN_KPIS_TO_PASS
-from scrapers import alibaba, aliexpress, amazon_in, flipkart_in, google_trends, meesho, myntra, snapdeal
+from scrapers import alibaba, aliexpress, amazon_in, amazon_search, flipkart_in, google_trends, meesho, myntra, snapdeal
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -69,6 +70,13 @@ def main():
         print(f"  {name}: {'ok' if not result['error'] else 'FAILED - ' + result['error']}")
         amazon_results.append(result)
 
+    print("Fetching Amazon.in search results (novelty/gift/decor archetype)...")
+    amazon_search_results = []
+    for kw in FUN_PRODUCT_KEYWORDS:
+        result = amazon_search.fetch_keyword_search(kw)
+        print(f"  {kw}: {'ok' if not result['error'] else 'FAILED - ' + result['error']}")
+        amazon_search_results.append(result)
+
     flipkart_results = _fetch_keyword_source(
         "Flipkart trending listings", FLIPKART_KEYWORDS, flipkart_in.fetch_keyword_trending, ENABLED_SOURCES["flipkart"]
     )
@@ -83,13 +91,14 @@ def main():
     )
 
     print("Filtering out junk/branded/non-dropshippable products...")
-    for results in (amazon_results, flipkart_results, meesho_results, myntra_results, snapdeal_results):
+    for results in (amazon_results, amazon_search_results, flipkart_results, meesho_results, myntra_results, snapdeal_results):
         filter_dropshippable(results)
 
     print(f"Ranking candidates, round-robin selecting {CANDIDATE_POOL_SIZE}, judging against the {MIN_KPIS_TO_PASS}/13 KPI rubric...")
     top_picks = build_top_picks(
         [
             ("Amazon.in", amazon_results),
+            ("Amazon Search", amazon_search_results),
             ("Flipkart", flipkart_results),
             ("Meesho", meesho_results),
             ("Myntra", myntra_results),
@@ -137,6 +146,7 @@ def main():
         top_picks=top_picks,
         trending_terms=trending_terms,
         amazon_results=amazon_results,
+        amazon_search_results=amazon_search_results,
         flipkart_results=flipkart_results,
         meesho_results=meesho_results,
         myntra_results=myntra_results,

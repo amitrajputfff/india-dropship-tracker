@@ -107,6 +107,27 @@ MYNTRA_KEYWORDS = [
     "formal shirt",
 ]
 
+# scrapers/amazon_search.py - Amazon.in's regular keyword SEARCH (not
+# bestseller lists), for the "novelty/gift/room-decor" dropship archetype
+# AMAZON_CATEGORIES structurally can't reach (Amazon.in has no bestseller
+# page for decor/lighting/gift subcategories). Spans four India-relevant
+# sub-archetypes, live-validated (real results, small-seller brands, not
+# big names) - see scrapers/amazon_search.py's docstring for the research.
+FUN_PRODUCT_KEYWORDS = [
+    # room-decor / novelty (validated: Desidiya, Jamboree!!!, Gesto, One94Store)
+    "galaxy projector",
+    "sunset lamp",
+    "led fairy lights",
+    # India-festive gifting
+    "designer diya lights",
+    "oxidised jewellery earrings",
+    # India-seasonal (extreme summer heat)
+    "portable misting fan",
+    # distinct-niche gadgets not covered by the existing bestseller categories
+    "mini handheld projector",
+    "pet camera treat dispenser",
+]
+
 # Which non-Amazon sources generate_report.py actually fetches. Flip any of
 # these back to True to re-enable - no other code changes needed.
 ENABLED_SOURCES = {
@@ -121,13 +142,18 @@ ENABLED_SOURCES = {
 # many of the final picks to run the Alibaba/AliExpress supplier check against.
 #
 # CANDIDATE_POOL_SIZE is capped by the Gemini free-tier quota: 20 requests/day
-# for gemini-2.5-flash, hard - not a soft cost concern. 18 leaves a small
-# buffer for a retry or a stray manual run on the same day. This is also why
-# AMAZON_CATEGORIES above is deliberately exactly 9 (18 / 9 = clean depth-2
-# round-robin coverage) rather than the wider category set that would
-# otherwise be the obvious volume fix - there's no quota headroom for it.
+# for gemini-2.5-flash, hard - not a soft cost concern, a real wall hit twice
+# in one day of testing. 20 uses the full quota with no buffer - the existing
+# llm_kpi_judge.judge() retry+fallback and the near-miss backfill already
+# absorb a stray degraded judgment gracefully, so there's no reliability
+# cliff from dropping the buffer that was here when there were only 9
+# sources (AMAZON_CATEGORIES). Now there are 9 + len(FUN_PRODUCT_KEYWORDS) =
+# 17 distinct source labels feeding aggregator._round_robin_select, which
+# gives every source at least depth-1 coverage and depth-2 for whichever
+# ~3 sources rank highest that day - uneven, but the round-robin logic
+# already handles that automatically, no code change needed there.
 TOP_PICKS_COUNT = 10
-CANDIDATE_POOL_SIZE = 18
+CANDIDATE_POOL_SIZE = 20
 SOURCING_CHECK_TOP_N = 10
 
 REQUEST_HEADERS = {

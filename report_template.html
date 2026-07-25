@@ -45,7 +45,7 @@
 <body>
 
 <h1>Top India Dropshipping Products</h1>
-<p class="subtitle">Generated {{ report_date }} - Amazon.in bestsellers x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products are filtered out first (keyword blocklist + an LLM brand check), then every survivor is scored against the standard 13-KPI dropship rubric.</p>
+<p class="subtitle">Generated {{ report_date }} - Amazon.in bestsellers (utility archetype) + Amazon.in search (novelty/gift/decor archetype) x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products are filtered out first (keyword blocklist + an LLM brand check), then every survivor is scored against the standard 13-KPI dropship rubric.</p>
 
 {% macro sourcing_badge(check) -%}
   {%- if check is none -%}
@@ -138,6 +138,12 @@
 {% endif %}
 {% endmacro %}
 
+{{ keyword_source_section(
+  "Amazon.in search - novelty/gift/decor archetype",
+  "Amazon.in has no bestseller page for decor/lighting/gift subcategories, so this searches directly for known-viral terms instead of scraping a category list. Occasional per-keyword failures are Amazon's Akamai anti-bot challenge (intermittent, not a parsing bug).",
+  amazon_search_results
+) }}
+
 {# Flipkart/Meesho/Myntra/Snapdeal are disabled in config.ENABLED_SOURCES (403s/timeouts
    confirmed even from GitHub Actions cloud IPs - an IP/ASN-level block, not a parsing
    problem), so generate_report.py passes empty lists for them and these sections simply
@@ -168,7 +174,7 @@
 ) }}
 
 <footer>
-  <p><strong>Methodology &amp; caveats:</strong> Amazon data is scraped from public bestseller pages (no official trending-products API exists), so it can break silently if Amazon changes its layout - check the "ok"/error status per category above before trusting a day's report. Google Trends uses its public RSS feed. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (see config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs. "Top picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by a 13-KPI rubric judged per-candidate by Gemini (with a keyword-based fallback, flagged inline, if the judge call fails). The judge call count is capped daily by the Gemini free-tier quota (20 requests/day), which is why the candidate pool and category list are deliberately sized to fit that ceiling rather than maximizing scrape volume. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere and shares words with the query - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
+  <p><strong>Methodology &amp; caveats:</strong> Amazon bestseller pages cover the "utility, solves one annoyance" archetype; Amazon's regular keyword search (a fixed watchlist of known-viral terms, config.FUN_PRODUCT_KEYWORDS) covers the "novelty/gift/room-decor" archetype instead, since Amazon.in has no bestseller page for decor/lighting/gift subcategories. Neither has an official trending-products API, so either can break silently if Amazon changes its layout - check the "ok"/error status per section above before trusting a day's report; the search endpoint specifically has real (intermittent) Akamai anti-bot protection, so an occasional per-keyword failure there is expected, not a regression. Google Trends uses its public RSS feed. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (see config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs. "Top picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by a 13-KPI rubric judged per-candidate by Gemini (with a keyword-based fallback, flagged inline, if the judge call fails). The judge call count is capped daily by the Gemini free-tier quota (20 requests/day), which is why the candidate pool and category/keyword list are deliberately sized to fit that ceiling rather than maximizing scrape volume. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere and shares words with the query - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
 </footer>
 
 </body>
