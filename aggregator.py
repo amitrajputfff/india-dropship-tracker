@@ -92,7 +92,9 @@ def rank_candidates(sources, trending_terms):
         for result in results:
             label = _entry_source_label(source_name, result)
             for item in result["products"]:
-                entries.append({"title": item["title"], "source": label, "rank": item["rank"]})
+                entries.append(
+                    {"title": item["title"], "source": label, "rank": item["rank"], "url": item.get("url")}
+                )
 
     scored = []
     for entry in entries:

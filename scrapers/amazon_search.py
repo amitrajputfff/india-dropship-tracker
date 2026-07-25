@@ -76,7 +76,7 @@ def _fetch_search_page(url: str):
 def fetch_keyword_search(keyword: str, limit: int = 20):
     """Scrape one search results page.
 
-    Returns {"keyword", "error", "products": [{"rank","title"}]}. Never raises.
+    Returns {"keyword", "error", "products": [{"rank","title","url"}]}. Never raises.
     """
     url = SEARCH_URL.format(query=keyword.replace(" ", "+"))
     html, error = _fetch_search_page(url)
@@ -96,7 +96,12 @@ def fetch_keyword_search(keyword: str, limit: int = 20):
         if not title or title in seen_titles:
             continue
         seen_titles.add(title)
-        items.append({"rank": len(items) + 1, "title": title, "keyword": keyword})
+
+        # The same div carries both data-component-type and data-asin.
+        asin = block.get("data-asin")
+        product_url = f"https://www.amazon.in/dp/{asin}/" if asin else None
+
+        items.append({"rank": len(items) + 1, "title": title, "keyword": keyword, "url": product_url})
         if len(items) >= limit:
             break
 

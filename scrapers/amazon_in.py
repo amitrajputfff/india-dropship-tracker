@@ -9,6 +9,10 @@ every few months. What's stayed stable is that every product slot in the
 ranked grid carries id="p13n-asin-index-N" (N = 0, 1, 2, ...) - so we anchor
 on that id pattern rather than any class name, then pull the `alt` text off
 the first image inside each slot (Amazon sets alt="<product title>" there).
+Each slot also carries a `data-asin="<ASIN>"` attribute on a descendant div -
+a clean, stable product ID we use to build a canonical `amazon.in/dp/<ASIN>/`
+link rather than parsing the messy tracking-parameter href Amazon actually
+puts on the product anchor.
 
 Keep this to one run/day and don't parallelize requests: scraping product
 listing pages sits in a ToS gray area for most e-commerce sites, and hammering
@@ -24,12 +28,13 @@ from bs4 import BeautifulSoup
 from config import REQUEST_DELAY_SECONDS, REQUEST_HEADERS, REQUEST_TIMEOUT_SECONDS
 
 _SLOT_ID_RE = re.compile(r"^p13n-asin-index-(\d+)$")
+_ASIN_RE = re.compile(r"^[A-Z0-9]{10}$")
 
 
 def fetch_category_bestsellers(category_name: str, url: str, limit: int = 20):
     """Scrape one bestseller category page.
 
-    Returns {"category", "error", "products": [{"rank","title","category"}]}.
+    Returns {"category", "error", "products": [{"rank","title","category","url"}]}.
     Never raises - a blocked/changed page just yields an empty item list plus
     an error string, so one bad category doesn't kill the whole report.
     """
@@ -59,7 +64,11 @@ def fetch_category_bestsellers(category_name: str, url: str, limit: int = 20):
         if not alt or alt in seen_titles:
             continue
         seen_titles.add(alt)
-        items.append({"rank": len(items) + 1, "title": alt, "category": category_name})
+
+        asin_tag = slot.find(attrs={"data-asin": _ASIN_RE})
+        product_url = f"https://www.amazon.in/dp/{asin_tag['data-asin']}/" if asin_tag else None
+
+        items.append({"rank": len(items) + 1, "title": alt, "category": category_name, "url": product_url})
         if len(items) >= limit:
             break
 

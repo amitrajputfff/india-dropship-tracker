@@ -166,6 +166,9 @@
   td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
   tbody tr.near-miss td { opacity: 0.72; }
 
+  .product-link { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .product-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
   .badge {
     display: inline-block;
     font-size: 11px;
@@ -292,7 +295,7 @@
     {% for pick in picks %}
     <tr class="{{ row_class }}">
       <td>{{ loop.index }}</td>
-      <td>{{ pick.title }}</td>
+      <td>{% if pick.url %}<a class="product-link" href="{{ pick.url }}" target="_blank" rel="noopener noreferrer">{{ pick.title }}</a>{% else %}{{ pick.title }}{% endif %}</td>
       <td>
         <span class="badge kpi">{{ pick.kpi.count }}/13</span><br>
         {% for k in pick.kpi.matched %}<span class="badge">{{ k }}</span>{% endfor %}
