@@ -175,8 +175,11 @@ def build_top_picks(sources, trending_terms, kpi_judger, top_n=15, candidate_poo
     shortlist, not every scraped product, to keep the number of judge calls
     bounded and predictable regardless of how many sources/categories are
     configured. `kpi_judger(title, category_hint)` must return
-    {"matched", "count", "passes", "is_recognizable_brand", "source"} - see
-    kpi_scoring.score_kpis / llm_kpi_judge.judge.
+    {"matched", "count", "passes", "is_recognizable_brand", "source"} on
+    success, or None if the candidate couldn't be judged (e.g. API quota
+    exhausted, invalid key) - see llm_kpi_judge.judge. There is no
+    keyword-based fallback: an unjudgeable candidate is excluded entirely
+    rather than given an approximate score.
 
     Returns {"passed": [...], "near_misses": [...]} - near_misses is only
     populated to backfill up to `top_n` when fewer than `top_n` candidates
@@ -189,10 +192,13 @@ def build_top_picks(sources, trending_terms, kpi_judger, top_n=15, candidate_poo
     for e in candidates:
         e["kpi"] = kpi_judger(e["title"], " ".join(e["sources"]))
 
+    judge_failures = sum(1 for e in candidates if e["kpi"] is None)
+    judged_candidates = [e for e in candidates if e["kpi"] is not None]
+
     # The keyword BRAND_BLOCKLIST is a free pre-filter but structurally can't
     # catch every brand (a small D2C brand and a national one often share no
     # distinguishing words) - the judge's own brand call is the backstop.
-    judged = [e for e in candidates if not e["kpi"].get("is_recognizable_brand")]
+    judged = [e for e in judged_candidates if not e["kpi"]["is_recognizable_brand"]]
 
     passed = [e for e in judged if e["kpi"]["passes"]]
     passed.sort(key=lambda e: (-e["kpi"]["count"], -e["score"]))
@@ -204,8 +210,9 @@ def build_top_picks(sources, trending_terms, kpi_judger, top_n=15, candidate_poo
     return {
         "passed": passed[:top_n],
         "near_misses": near_misses[:remaining],
-        "candidates_judged": len(candidates),
-        "excluded_as_brand": len(candidates) - len(judged),
+        "candidates_judged": len(judged_candidates),
+        "excluded_as_brand": len(judged_candidates) - len(judged),
+        "judge_failures": judge_failures,
     }
 
 

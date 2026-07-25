@@ -115,7 +115,8 @@ def main():
     histogram_str = ", ".join(f"{n}/13:{histogram[n]}" for n in sorted(histogram, reverse=True))
     print(
         f"  judged {top_picks['candidates_judged']} candidates "
-        f"({top_picks['excluded_as_brand']} excluded as recognizable brands) - counts: {histogram_str}"
+        f"({top_picks['excluded_as_brand']} excluded as recognizable brands, "
+        f"{top_picks['judge_failures']} could not be judged and were excluded) - counts: {histogram_str}"
     )
     print(f"  {len(top_picks['passed'])} passed, {len(top_picks['near_misses'])} near-miss backfill")
     for tag, tier in (("PASS", top_picks["passed"]), ("near-miss", top_picks["near_misses"])):

@@ -254,21 +254,21 @@
       <span><strong>Near-miss backfill:</strong> {{ top_picks.near_misses|length }}</span>
       <span><strong>Candidates judged:</strong> {{ top_picks.candidates_judged }}</span>
       <span><strong>Excluded as brand:</strong> {{ top_picks.excluded_as_brand }}</span>
+      {% if top_picks.judge_failures %}<span><strong>Could not be judged:</strong> {{ top_picks.judge_failures }}</span>{% endif %}
     </div>
   </header>
 
-  {% set fallback_count = (top_picks.passed + top_picks.near_misses) | rejectattr('kpi.source', 'equalto', 'llm') | list | length %}
   {% if not top_picks.passed %}
   <div class="callout bad">
     <strong>No products passed the rubric today.</strong> The near-miss table below shows the best of what was judged, but none of it is a real recommendation — it's backfill so the report still has something to review. Check the source health tables further down for outages that may have starved the candidate pool.
   </div>
-  {% elif fallback_count > 0 %}
+  {% elif top_picks.judge_failures > 0 %}
   <div class="callout warn">
-    <strong>{{ fallback_count }} of {{ top_picks.candidates_judged }} judged candidate(s) fell back to keyword scoring</strong> instead of a live Gemini judgment — usually the free-tier daily quota (20 requests/day) ran out. Fallback-scored rows are marked <code>(fallback)</code> inline and cap out lower than a real judgment would, so treat those specific rows more skeptically than the rest.
+    <strong>{{ top_picks.judge_failures }} candidate(s) couldn't be judged by either LLM provider</strong> (Cerebras and Gemini both failed - check the console/Actions log for the reason, usually a quota or API error) and were excluded entirely rather than given an approximate score.
   </div>
   {% else %}
   <div class="callout good">
-    <strong>Every judged candidate today got a live Gemini judgment</strong> — no keyword-scoring fallbacks were needed.
+    <strong>Every candidate today got a real LLM judgment</strong> — no exclusions due to provider failures.
   </div>
   {% endif %}
 
@@ -294,8 +294,7 @@
       <td>{{ loop.index }}</td>
       <td>{{ pick.title }}</td>
       <td>
-        <span class="badge kpi">{{ pick.kpi.count }}/13</span>
-        {% if pick.kpi.source != 'llm' %}<span class="status error">(fallback)</span>{% endif %}<br>
+        <span class="badge kpi">{{ pick.kpi.count }}/13</span><br>
         {% for k in pick.kpi.matched %}<span class="badge">{{ k }}</span>{% endfor %}
       </td>
       <td class="num">
@@ -394,7 +393,7 @@
   {{ keyword_status_table("Snapdeal", snapdeal_results) }}
 
   <footer>
-    <p><strong>Methodology &amp; caveats:</strong> Amazon bestseller pages cover the "utility, solves one annoyance" archetype; Amazon's regular keyword search (a fixed watchlist of known-viral terms) covers "novelty/gift/room-decor" instead, since Amazon.in has no bestseller page for those subcategories. Neither has an official trending-products API, so either can break silently if Amazon changes its layout. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs — their tables above simply won't appear while disabled. "Picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by the 13-KPI rubric judged per-candidate by Gemini, capped at 20 requests/day (free tier) — which is why the candidate pool and category/keyword lists are sized to fit that ceiling rather than maximize scrape volume. The Alibaba/AliExpress columns only confirm a matching listing exists and shares words with the query — not price, MOQ, or seller reliability, so vet a supplier manually before committing.</p>
+    <p><strong>Methodology &amp; caveats:</strong> Amazon bestseller pages cover the "utility, solves one annoyance" archetype; Amazon's regular keyword search (a fixed watchlist of known-viral terms) covers "novelty/gift/room-decor" instead, since Amazon.in has no bestseller page for those subcategories. Neither has an official trending-products API, so either can break silently if Amazon changes its layout. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs — their tables above simply won't appear while disabled. "Picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by the 13-KPI rubric judged per-candidate by a real LLM (Cerebras primary, Gemini as a secondary check) — there is no keyword-approximation fallback; a candidate neither provider can judge is excluded entirely rather than scored approximately. The Alibaba/AliExpress columns only confirm a matching listing exists and shares words with the query — not price, MOQ, or seller reliability, so vet a supplier manually before committing.</p>
   </footer>
 
 </div>

@@ -29,6 +29,7 @@ jobs:
 
       - name: Generate report
         env:
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python generate_report.py
 

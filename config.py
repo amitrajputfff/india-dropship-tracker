@@ -141,19 +141,18 @@ ENABLED_SOURCES = {
 # momentum-ranked candidates to run the (LLM) 13-KPI judge against, and how
 # many of the final picks to run the Alibaba/AliExpress supplier check against.
 #
-# CANDIDATE_POOL_SIZE is capped by the Gemini free-tier quota: 20 requests/day
-# for gemini-2.5-flash, hard - not a soft cost concern, a real wall hit twice
-# in one day of testing. 20 uses the full quota with no buffer - the existing
-# llm_kpi_judge.judge() retry+fallback and the near-miss backfill already
-# absorb a stray degraded judgment gracefully, so there's no reliability
-# cliff from dropping the buffer that was here when there were only 9
-# sources (AMAZON_CATEGORIES). Now there are 9 + len(FUN_PRODUCT_KEYWORDS) =
-# 17 distinct source labels feeding aggregator._round_robin_select, which
-# gives every source at least depth-1 coverage and depth-2 for whichever
-# ~3 sources rank highest that day - uneven, but the round-robin logic
-# already handles that automatically, no code change needed there.
+# CANDIDATE_POOL_SIZE used to be hard-capped at 20 to fit Gemini's free-tier
+# quota (20 requests/day - a real wall hit repeatedly in testing). Now that
+# llm_kpi_judge.judge() uses Cerebras as the primary provider (confirmed live:
+# 1.44M requests/day quota, effectively unlimited for this project's volume),
+# that ceiling no longer applies - Gemini is just a secondary check if
+# Cerebras fails. 60 gives depth ~3-4 per source across the 9 Amazon
+# categories + len(FUN_PRODUCT_KEYWORDS) = 17 distinct source labels feeding
+# aggregator._round_robin_select, a meaningfully deeper look than the
+# depth-1/2 coverage the old 20-item cap allowed, without judging so many
+# candidates a single run takes unreasonably long.
 TOP_PICKS_COUNT = 10
-CANDIDATE_POOL_SIZE = 20
+CANDIDATE_POOL_SIZE = 60
 SOURCING_CHECK_TOP_N = 10
 
 REQUEST_HEADERS = {
