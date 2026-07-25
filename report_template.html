@@ -14,6 +14,7 @@
   th { background: #f4f4f4; }
   .score-bar-wrap { background: #eee; border-radius: 4px; width: 120px; height: 10px; display: inline-block; overflow: hidden; }
   .score-bar { background: #2e7d32; height: 100%; }
+  .near-miss .score-bar { background: #9e9e9e; }
   .badge { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 10px; background: #e3f2fd; color: #1565c0; margin: 0 0.2rem 0.2rem 0; }
   .badge.trend { background: #fff3e0; color: #e65100; }
   .badge.sourcing-yes { background: #e8f5e9; color: #2e7d32; }
@@ -31,6 +32,7 @@
     th { background: #1e1e1e; }
     th, td { border-color: #2a2a2a; }
     .score-bar-wrap { background: #333; }
+    .near-miss .score-bar { background: #555; }
     .badge { background: #123a5c; color: #90caf9; }
     .badge.trend { background: #4a2c00; color: #ffcc80; }
     .badge.sourcing-yes { background: #1b3a1e; color: #81c784; }
@@ -43,7 +45,7 @@
 <body>
 
 <h1>Top India Dropshipping Products</h1>
-<p class="subtitle">Generated {{ report_date }} - Amazon.in, Flipkart, Meesho, Myntra &amp; Snapdeal x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products (OnePlus, Jockey, Amazon Brand, etc.) are filtered out first, then every survivor is scored against the standard 13-KPI dropship rubric - only products matching {{ min_kpis }}+ of 13 make this list.</p>
+<p class="subtitle">Generated {{ report_date }} - Amazon.in bestsellers x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products are filtered out first (keyword blocklist + an LLM brand check), then every survivor is scored against the standard 13-KPI dropship rubric.</p>
 
 {% macro sourcing_badge(check) -%}
   {%- if check is none -%}
@@ -57,12 +59,11 @@
   {%- endif -%}
 {%- endmacro %}
 
-<h2>Top {{ top_picks|length }} picks passing the {{ min_kpis }}/13 KPI bar</h2>
-<p class="muted">Every candidate is scored against the 13-point rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) - only products matching {{ min_kpis }}+ appear here at all, ranked by KPI count first, then by bestseller rank / cross-platform / Google Trends momentum. It's normal for this list to have fewer than 10 entries on a given day - that's the rubric being strict, not a bug. The Alibaba/AliExpress columns are a supplier-availability gut-check on top of that - a signal to investigate, not an auto-buy decision.</p>
+{% macro picks_table(picks, base_score, row_class) %}
 <table>
   <tr><th>#</th><th>Product</th><th>KPIs matched</th><th>Momentum score</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr>
-  {% for pick in top_picks %}
-  <tr>
+  {% for pick in picks %}
+  <tr class="{{ row_class }}">
     <td>{{ loop.index }}</td>
     <td>{{ pick.title }}</td>
     <td>
@@ -71,7 +72,7 @@
       {% for k in pick.kpi.matched %}<span class="badge trend">{{ k }}</span>{% endfor %}
     </td>
     <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: {{ (pick.score * 100 / (top_picks[0].score if top_picks else 1)) | round(0, 'floor') }}%;"></div></div>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: {{ (pick.score * 100 / base_score) | round(0, 'floor') }}%;"></div></div>
       {{ pick.score }}
     </td>
     <td>{% for s in pick.sources %}<span class="badge">{{ s }}</span>{% endfor %}</td>
@@ -79,10 +80,23 @@
     <td>{{ sourcing_badge(pick.sourcing.alibaba if pick.sourcing else none) }}</td>
     <td>{{ sourcing_badge(pick.sourcing.aliexpress if pick.sourcing else none) }}</td>
   </tr>
-  {% else %}
-  <tr><td colspan="8">No products passed the {{ min_kpis }}/13 KPI bar today - check the source status below (a source outage means fewer candidates to score, not that nothing qualified).</td></tr>
   {% endfor %}
 </table>
+{% endmacro %}
+
+<h2>Top {{ top_picks.passed|length }} picks passing the {{ min_kpis }}/13 KPI bar</h2>
+<p class="muted">Every candidate is scored against the 13-point rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) - ranked by KPI count first, then by bestseller rank/Google Trends momentum. The Alibaba/AliExpress columns are a supplier-availability gut-check on top of that - a signal to investigate, not an auto-buy decision.</p>
+{% if top_picks.passed %}
+  {{ picks_table(top_picks.passed, top_picks.passed[0].score, "") }}
+{% else %}
+  <p>No products passed the {{ min_kpis }}/13 KPI bar today - check the Amazon source status below (a source outage means fewer candidates to score, not that nothing qualified).</p>
+{% endif %}
+
+{% if top_picks.near_misses %}
+<h2>Near misses - did NOT pass the {{ min_kpis }}/13 bar</h2>
+<p class="muted">Only {{ top_picks.passed|length }} product(s) cleared the rubric today, so these {{ top_picks.near_misses|length }} are backfilled from the same judged pool to round the list out to {{ top_picks.passed|length + top_picks.near_misses|length }} - they scored below {{ min_kpis }}/13 and did <strong>not</strong> pass. Treat this section as "worth a second look," not a recommendation.</p>
+{{ picks_table(top_picks.near_misses, top_picks.near_misses[0].score, "near-miss") }}
+{% endif %}
 
 <h2>Google Trends - India (today)</h2>
 <div class="trend-terms">
@@ -105,6 +119,7 @@
 {% endfor %}
 
 {% macro keyword_source_section(title, note, results) %}
+{% if results %}
 <h2>{{ title }}</h2>
 <p class="muted">{{ note }}</p>
 {% for result in results %}
@@ -120,8 +135,14 @@
   </table>
   {% endif %}
 {% endfor %}
+{% endif %}
 {% endmacro %}
 
+{# Flipkart/Meesho/Myntra/Snapdeal are disabled in config.ENABLED_SOURCES (403s/timeouts
+   confirmed even from GitHub Actions cloud IPs - an IP/ASN-level block, not a parsing
+   problem), so generate_report.py passes empty lists for them and these sections simply
+   don't render. Flip a flag back to True in config.py to bring a section back with no
+   template changes needed. #}
 {{ keyword_source_section(
   "Flipkart - popularity search by keyword",
   "No dedicated bestseller page on Flipkart, so this approximates it via popularity-sorted search - cross-check before trusting on its own.",
@@ -147,7 +168,7 @@
 ) }}
 
 <footer>
-  <p><strong>Methodology &amp; caveats:</strong> Amazon/Flipkart/Meesho/Myntra/Snapdeal data is scraped from public pages (none of them offer a free trending-products API), so any section can break silently if that site changes its layout - check the "ok"/error status per section above before trusting a day's report. Google Trends uses its public RSS feed. Cross-platform "top picks" scoring is a heuristic (token overlap between listing titles and trend terms), not a guarantee of demand. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
+  <p><strong>Methodology &amp; caveats:</strong> Amazon data is scraped from public bestseller pages (no official trending-products API exists), so it can break silently if Amazon changes its layout - check the "ok"/error status per category above before trusting a day's report. Google Trends uses its public RSS feed. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (see config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs. "Top picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by a 13-KPI rubric judged per-candidate by Gemini (with a keyword-based fallback, flagged inline, if the judge call fails). The judge call count is capped daily by the Gemini free-tier quota (20 requests/day), which is why the candidate pool and category list are deliberately sized to fit that ceiling rather than maximizing scrape volume. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere and shares words with the query - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
 </footer>
 
 </body>

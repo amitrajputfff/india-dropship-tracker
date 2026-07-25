@@ -12,6 +12,17 @@ Edit AMAZON_CATEGORIES / *_KEYWORDS to change what gets tracked.
 # than brand-dominated ones - "Electronics"/"Computers"/"Clothing" bestseller
 # lists are almost entirely OnePlus/Samsung/Jockey/Nike-type products, which
 # get filtered out anyway, so scraping them mostly wastes requests.
+#
+# Exactly 9 categories, deliberately: with CANDIDATE_POOL_SIZE=18 and
+# round-robin selection (aggregator._round_robin_select), that's exactly
+# depth-2 coverage per category (ranks 1 AND 2 from every category judged,
+# not just whichever categories have the highest-momentum rank-1 item). Add
+# categories in matching multiples of the pool size if you raise it, or the
+# round-robin depth gets uneven. "car-motorbike" 404s its bestseller grid -
+# the real Amazon.in slug is "automotive" - and "office-products"/
+# "baby-products"/"health-personal-care" return 200 with zero product slots
+# (no bestseller grid at that URL), so they're left out rather than wasting
+# a request every run.
 AMAZON_CATEGORIES = {
     "Kitchen & Home": "https://www.amazon.in/gp/bestsellers/kitchen/",
     "Home Improvement": "https://www.amazon.in/gp/bestsellers/home-improvement/",
@@ -19,8 +30,9 @@ AMAZON_CATEGORIES = {
     "Toys & Games": "https://www.amazon.in/gp/bestsellers/toys/",
     "Sports & Fitness": "https://www.amazon.in/gp/bestsellers/sports/",
     "Pet Supplies": "https://www.amazon.in/gp/bestsellers/pet-supplies/",
-    "Car & Motorbike": "https://www.amazon.in/gp/bestsellers/car-motorbike/",
+    "Car & Motorbike": "https://www.amazon.in/gp/bestsellers/automotive/",
     "Garden & Outdoors": "https://www.amazon.in/gp/bestsellers/garden/",
+    "Luggage & Bags": "https://www.amazon.in/gp/bestsellers/luggage/",
 }
 
 # Products containing any of these (case-insensitive substring match) are
@@ -44,21 +56,29 @@ BRAND_BLOCKLIST = {
     # toys
     "lego", "hot wheels", "barbie", "fisher-price", "fisher price", "hasbro",
     "mattel", "funskool", "nerf", "disney", "marvel", "beyblade",
+    # observed leaks from a live run - unambiguous national/international CPG
+    # brands only. Deliberately NOT including "boldfit"/"lifelong": both had
+    # products (a pull-up bar, a foldable scooter) genuinely pass the KPI
+    # judge in an earlier run, so a hard block would re-exclude legitimate
+    # picks. Their brand-locked items (if any) are left to
+    # llm_kpi_judge.judge()'s is_recognizable_brand field, which can judge
+    # case-by-case rather than blocking the whole brand name outright.
+    "amazon basics", "pedigree", "whiskas", "drools", "purepet", "meat up",
+    "cetaphil", "mortein", "milton", "nivia", "gala",
+    "the derma co", "bare anatomy", "be bodywise",
 }
 
 # Generic noise that occasionally shows up in bestseller widgets but isn't a
 # physical product at all (gift cards, bill-payment shortcuts, etc.).
 NOISE_PHRASES = {"booking", "recharge", "gift card", "bill payment", "subscription"}
 
-# None of Flipkart/Meesho/Snapdeal have a public "bestsellers" page like
-# Amazon, so we approximate it by scraping search results sorted by
-# popularity/relevance for a fixed keyword watchlist.
-#
-# Keywords are aimed at the classic "viral Shopify dropship" archetype - cheap,
-# generic, single-problem silicone/plastic gadgets (e.g. a silicone sink-edge
-# splash guard: solves one annoyance, easy to source wholesale, no brand
-# equity) - rather than branded consumer electronics, which get filtered out
-# by BRAND_BLOCKLIST anyway.
+# Flipkart/Meesho/Snapdeal/Myntra are DISABLED (see ENABLED_SOURCES below) -
+# confirmed live that Meesho/Snapdeal 403 and Myntra times out even from
+# GitHub Actions' cloud IPs (an IP/ASN-level anti-bot block, not something
+# header tuning or better parsing fixes), and Flipkart's Actions response
+# contains zero real product strings at all - just nav/filter chrome. Keeping
+# the keyword lists and scraper code in place so re-enabling any of them
+# later, if a source ever starts working, is one line in ENABLED_SOURCES.
 GENERAL_PRODUCT_KEYWORDS = [
     "silicone kitchen gadget",
     "sink splash guard",
@@ -87,11 +107,27 @@ MYNTRA_KEYWORDS = [
     "formal shirt",
 ]
 
+# Which non-Amazon sources generate_report.py actually fetches. Flip any of
+# these back to True to re-enable - no other code changes needed.
+ENABLED_SOURCES = {
+    "flipkart": False,
+    "meesho": False,
+    "myntra": False,
+    "snapdeal": False,
+}
+
 # How many top cross-platform picks to show in the report, how many
 # momentum-ranked candidates to run the (LLM) 13-KPI judge against, and how
 # many of the final picks to run the Alibaba/AliExpress supplier check against.
+#
+# CANDIDATE_POOL_SIZE is capped by the Gemini free-tier quota: 20 requests/day
+# for gemini-2.5-flash, hard - not a soft cost concern. 18 leaves a small
+# buffer for a retry or a stray manual run on the same day. This is also why
+# AMAZON_CATEGORIES above is deliberately exactly 9 (18 / 9 = clean depth-2
+# round-robin coverage) rather than the wider category set that would
+# otherwise be the obvious volume fix - there's no quota headroom for it.
 TOP_PICKS_COUNT = 10
-CANDIDATE_POOL_SIZE = 25  # bounds LLM judge calls per run regardless of source count
+CANDIDATE_POOL_SIZE = 18
 SOURCING_CHECK_TOP_N = 10
 
 REQUEST_HEADERS = {

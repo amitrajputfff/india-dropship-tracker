@@ -76,11 +76,21 @@ _TOKEN_RE = re.compile(r"[a-z0-9]+")
 
 
 def score_kpis(title: str, category: str = None):
-    """Return {"matched": [kpi names], "count": int, "passes": bool}."""
+    """Return {"matched": [kpi names], "count": int, "passes": bool, "is_recognizable_brand": bool}.
+
+    is_recognizable_brand is always False here - a keyword scorer has no way
+    to judge that; brand exclusion for this fallback path relies entirely on
+    config.BRAND_BLOCKLIST (applied earlier, in aggregator.filter_dropshippable).
+    """
     text = title.lower()
     if category:
         text += " " + category.lower()
     tokens = set(_TOKEN_RE.findall(text))
 
     matched = [name for name, keywords in KPI_KEYWORDS.items() if tokens & keywords]
-    return {"matched": matched, "count": len(matched), "passes": len(matched) >= MIN_KPIS_TO_PASS}
+    return {
+        "matched": matched,
+        "count": len(matched),
+        "passes": len(matched) >= MIN_KPIS_TO_PASS,
+        "is_recognizable_brand": False,
+    }

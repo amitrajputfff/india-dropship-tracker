@@ -9,6 +9,7 @@ overlap instead of exact/fuzzy string comparison.
 import re
 
 from config import BRAND_BLOCKLIST, NOISE_PHRASES
+from product_titles import looks_like_product_title
 
 _STOPWORDS = {"the", "a", "an", "for", "with", "and", "of", "in", "on", "to", "pack", "set"}
 
@@ -19,7 +20,9 @@ def _tokenize(title: str):
 
 
 def is_dropshippable(title: str) -> bool:
-    """False for recognizable brands (can't source them wholesale) or noise entries."""
+    """False for junk (nav/filter text), recognizable brands, or noise entries."""
+    if not looks_like_product_title(title):
+        return False
     lower = f" {title.lower()} "
     if any(brand in lower for brand in BRAND_BLOCKLIST):
         return False
@@ -36,9 +39,32 @@ def filter_dropshippable(results):
 
 
 def _overlap_ratio(tokens_a, tokens_b) -> float:
-    if not tokens_a or not tokens_b:
+    """Min-denominator overlap, used only for trend-term matching.
+
+    Guarded against <2-token sides - without this, a title tokenizing to a
+    single word (or a junk fragment) can read as a "perfect" 1.0 match
+    against anything, which is exactly how junk once collected a full trend
+    bonus it had no business getting.
+    """
+    if len(tokens_a) < 2 or len(tokens_b) < 2:
         return 0.0
     return len(tokens_a & tokens_b) / min(len(tokens_a), len(tokens_b))
+
+
+def _jaccard_ratio(tokens_a, tokens_b) -> float:
+    """Union-denominator overlap, used for the cross-source merge/dedupe step.
+
+    Min-denominator overlap lets any short token subset (junk, or a shorter
+    product title that happens to share words with a longer, unrelated one)
+    read as a perfect match. Jaccard requires the two titles to actually be
+    *mostly the same set of words*, not just one being a subset of the other -
+    this is what stopped three different Purepet flavour variants from
+    merging into a single inflated "cross-platform" entry.
+    """
+    if not tokens_a or not tokens_b:
+        return 0.0
+    union = tokens_a | tokens_b
+    return len(tokens_a & tokens_b) / len(union)
 
 
 def _entry_source_label(source_name, result):
@@ -91,14 +117,17 @@ def rank_candidates(sources, trending_terms):
 
     # Merge near-duplicate titles across sources so the same product
     # appearing on Amazon *and* Flipkart counts as one stronger signal,
-    # not two separate weak ones.
+    # not two separate weak ones. Jaccard (not min-denominator) so a shorter
+    # title can't falsely "contain" an unrelated longer one, and same-source
+    # duplicates don't stack score or repeat in the sources badge list.
     merged = []
     for entry in sorted(scored, key=lambda e: -e["score"]):
         tokens = _tokenize(entry["title"])
-        match = next((m for m in merged if _overlap_ratio(tokens, _tokenize(m["title"])) > 0.6), None)
+        match = next((m for m in merged if _jaccard_ratio(tokens, _tokenize(m["title"])) > 0.55), None)
         if match:
-            match["sources"].append(entry["source"])
-            match["score"] += entry["score"] * 0.5
+            if entry["source"] not in match["sources"]:
+                match["sources"].append(entry["source"])
+                match["score"] += entry["score"] * 0.5
             if entry["trend_match"] and not match["trend_match"]:
                 match["trend_match"] = entry["trend_match"]
         else:
@@ -110,38 +139,88 @@ def rank_candidates(sources, trending_terms):
     return merged
 
 
-def build_top_picks(sources, trending_terms, kpi_judger, top_n=15, candidate_pool_size=25):
-    """Rank by momentum, then gate the top `candidate_pool_size` on the 13-KPI rubric.
+def _round_robin_select(candidates, pool_size):
+    """Pick candidates round-robin across distinct source labels, not a flat top-N slice.
 
-    KPI judging (an LLM call per candidate) only runs on the momentum-ranked
+    With 1/rank scoring, a flat top-N-by-score slice is dominated by every
+    source's own rank-1/2/3 items (they all score close to 1.0), so ranks 4+
+    - where a lot of the actual dropship-shaped products sit - never reach
+    the KPI judge at all. Round-robin guarantees every source gets a fair
+    share of the pool instead of the highest-momentum few sources eating it.
+    """
+    buckets, order = {}, []
+    for c in candidates:
+        key = c["sources"][0]
+        if key not in buckets:
+            buckets[key] = []
+            order.append(key)
+        buckets[key].append(c)
+
+    selected = []
+    depth = 0
+    while len(selected) < pool_size and any(depth < len(buckets[k]) for k in order):
+        for key in order:
+            if len(selected) >= pool_size:
+                break
+            if depth < len(buckets[key]):
+                selected.append(buckets[key][depth])
+        depth += 1
+    return selected
+
+
+def build_top_picks(sources, trending_terms, kpi_judger, top_n=15, candidate_pool_size=25):
+    """Rank by momentum, round-robin a shortlist, then gate on the 13-KPI rubric.
+
+    KPI judging (an LLM call per candidate) only runs on the `candidate_pool_size`
     shortlist, not every scraped product, to keep the number of judge calls
     bounded and predictable regardless of how many sources/categories are
     configured. `kpi_judger(title, category_hint)` must return
-    {"matched", "count", "passes", "source"} - see kpi_scoring.score_kpis /
-    llm_kpi_judge.judge.
+    {"matched", "count", "passes", "is_recognizable_brand", "source"} - see
+    kpi_scoring.score_kpis / llm_kpi_judge.judge.
+
+    Returns {"passed": [...], "near_misses": [...]} - near_misses is only
+    populated to backfill up to `top_n` when fewer than `top_n` candidates
+    genuinely pass, so the report can show a full list while staying honest
+    about which rows actually cleared the bar.
     """
-    candidates = rank_candidates(sources, trending_terms)[:candidate_pool_size]
+    merged = rank_candidates(sources, trending_terms)
+    candidates = _round_robin_select(merged, candidate_pool_size)
 
     for e in candidates:
         e["kpi"] = kpi_judger(e["title"], " ".join(e["sources"]))
 
-    qualified = [e for e in candidates if e["kpi"]["passes"]]
-    qualified.sort(key=lambda e: (-e["kpi"]["count"], -e["score"]))
-    return qualified[:top_n]
+    # The keyword BRAND_BLOCKLIST is a free pre-filter but structurally can't
+    # catch every brand (a small D2C brand and a national one often share no
+    # distinguishing words) - the judge's own brand call is the backstop.
+    judged = [e for e in candidates if not e["kpi"].get("is_recognizable_brand")]
+
+    passed = [e for e in judged if e["kpi"]["passes"]]
+    passed.sort(key=lambda e: (-e["kpi"]["count"], -e["score"]))
+
+    near_misses = [e for e in judged if not e["kpi"]["passes"]]
+    near_misses.sort(key=lambda e: (-e["kpi"]["count"], -e["score"]))
+
+    remaining = max(0, top_n - len(passed))
+    return {
+        "passed": passed[:top_n],
+        "near_misses": near_misses[:remaining],
+        "candidates_judged": len(candidates),
+        "excluded_as_brand": len(candidates) - len(judged),
+    }
 
 
-def attach_sourcing_checks(top_picks, alibaba_checker, aliexpress_checker, top_n):
+def attach_sourcing_checks(picks, alibaba_checker, aliexpress_checker, top_n):
     """Run the Alibaba/AliExpress supplier-availability check against the top N picks.
 
-    Mutates and returns top_picks with an added "sourcing" dict per checked pick:
+    Mutates and returns `picks` with an added "sourcing" dict per checked pick:
     {"alibaba": {...}, "aliexpress": {...}}. Picks beyond top_n are left as-is
     (sourcing = None) to bound the number of extra HTTP requests per run.
     """
-    for pick in top_picks[:top_n]:
+    for pick in picks[:top_n]:
         pick["sourcing"] = {
             "alibaba": alibaba_checker(pick["title"]),
             "aliexpress": aliexpress_checker(pick["title"]),
         }
-    for pick in top_picks[top_n:]:
+    for pick in picks[top_n:]:
         pick["sourcing"] = None
-    return top_picks
+    return picks

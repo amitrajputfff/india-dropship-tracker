@@ -11,6 +11,7 @@ stable filename so you can bookmark/open it without checking the date).
 import argparse
 import os
 import webbrowser
+from collections import Counter
 from datetime import date
 
 from jinja2 import Template
@@ -20,6 +21,7 @@ from aggregator import attach_sourcing_checks, build_top_picks, filter_dropshipp
 from config import (
     AMAZON_CATEGORIES,
     CANDIDATE_POOL_SIZE,
+    ENABLED_SOURCES,
     FLIPKART_KEYWORDS,
     MEESHO_KEYWORDS,
     MYNTRA_KEYWORDS,
@@ -34,7 +36,10 @@ from scrapers import alibaba, aliexpress, amazon_in, flipkart_in, google_trends,
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def _fetch_keyword_source(label, keywords, fetch_fn):
+def _fetch_keyword_source(label, keywords, fetch_fn, enabled):
+    if not enabled:
+        print(f"Skipping {label} (disabled in config.ENABLED_SOURCES)")
+        return []
     print(f"Fetching {label}...")
     results = []
     for kw in keywords:
@@ -64,16 +69,24 @@ def main():
         print(f"  {name}: {'ok' if not result['error'] else 'FAILED - ' + result['error']}")
         amazon_results.append(result)
 
-    flipkart_results = _fetch_keyword_source("Flipkart trending listings", FLIPKART_KEYWORDS, flipkart_in.fetch_keyword_trending)
-    meesho_results = _fetch_keyword_source("Meesho trending listings", MEESHO_KEYWORDS, meesho.fetch_keyword_trending)
-    myntra_results = _fetch_keyword_source("Myntra trending listings", MYNTRA_KEYWORDS, myntra.fetch_keyword_trending)
-    snapdeal_results = _fetch_keyword_source("Snapdeal trending listings", SNAPDEAL_KEYWORDS, snapdeal.fetch_keyword_trending)
+    flipkart_results = _fetch_keyword_source(
+        "Flipkart trending listings", FLIPKART_KEYWORDS, flipkart_in.fetch_keyword_trending, ENABLED_SOURCES["flipkart"]
+    )
+    meesho_results = _fetch_keyword_source(
+        "Meesho trending listings", MEESHO_KEYWORDS, meesho.fetch_keyword_trending, ENABLED_SOURCES["meesho"]
+    )
+    myntra_results = _fetch_keyword_source(
+        "Myntra trending listings", MYNTRA_KEYWORDS, myntra.fetch_keyword_trending, ENABLED_SOURCES["myntra"]
+    )
+    snapdeal_results = _fetch_keyword_source(
+        "Snapdeal trending listings", SNAPDEAL_KEYWORDS, snapdeal.fetch_keyword_trending, ENABLED_SOURCES["snapdeal"]
+    )
 
-    print("Filtering out branded/non-dropshippable products...")
+    print("Filtering out junk/branded/non-dropshippable products...")
     for results in (amazon_results, flipkart_results, meesho_results, myntra_results, snapdeal_results):
         filter_dropshippable(results)
 
-    print(f"Ranking candidates, then judging top {CANDIDATE_POOL_SIZE} against the {MIN_KPIS_TO_PASS}/13 KPI rubric...")
+    print(f"Ranking candidates, round-robin selecting {CANDIDATE_POOL_SIZE}, judging against the {MIN_KPIS_TO_PASS}/13 KPI rubric...")
     top_picks = build_top_picks(
         [
             ("Amazon.in", amazon_results),
@@ -87,13 +100,24 @@ def main():
         top_n=TOP_PICKS_COUNT,
         candidate_pool_size=CANDIDATE_POOL_SIZE,
     )
-    print(f"  {len(top_picks)} product(s) passed the KPI bar")
-    for pick in top_picks:
-        print(f"    {pick['kpi']['count']}/13 ({pick['kpi']['source']}): {pick['title'][:60]!r}")
 
-    print(f"Checking supplier availability (Alibaba/AliExpress) for top {SOURCING_CHECK_TOP_N} picks...")
-    top_picks = attach_sourcing_checks(top_picks, alibaba.check_sourcing, aliexpress.check_sourcing, SOURCING_CHECK_TOP_N)
-    for pick in top_picks[:SOURCING_CHECK_TOP_N]:
+    all_judged = top_picks["passed"] + top_picks["near_misses"]
+    histogram = Counter(e["kpi"]["count"] for e in all_judged)
+    histogram_str = ", ".join(f"{n}/13:{histogram[n]}" for n in sorted(histogram, reverse=True))
+    print(
+        f"  judged {top_picks['candidates_judged']} candidates "
+        f"({top_picks['excluded_as_brand']} excluded as recognizable brands) - counts: {histogram_str}"
+    )
+    print(f"  {len(top_picks['passed'])} passed, {len(top_picks['near_misses'])} near-miss backfill")
+    for tag, tier in (("PASS", top_picks["passed"]), ("near-miss", top_picks["near_misses"])):
+        for pick in tier:
+            print(f"    [{tag}] {pick['kpi']['count']}/13 ({pick['kpi']['source']}): {pick['title'][:60]!r}")
+
+    print(f"Checking supplier availability (Alibaba/AliExpress) for top {SOURCING_CHECK_TOP_N} passed picks...")
+    top_picks["passed"] = attach_sourcing_checks(
+        top_picks["passed"], alibaba.check_sourcing, aliexpress.check_sourcing, SOURCING_CHECK_TOP_N
+    )
+    for pick in top_picks["passed"][:SOURCING_CHECK_TOP_N]:
         ali_ok = pick["sourcing"]["alibaba"]["available"]
         aliexp_ok = pick["sourcing"]["aliexpress"]["available"]
         print(f"  {pick['title'][:50]!r}: Alibaba={ali_ok} AliExpress={aliexp_ok}")

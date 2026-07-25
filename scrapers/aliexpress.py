@@ -18,7 +18,12 @@ SEARCH_URL = "https://www.aliexpress.com/wholesale?SearchText={query}"
 
 
 def check_sourcing(product_title: str, sample_size: int = 5):
-    """Return {"available", "error", "sample_titles"} for a product title."""
+    """Return {"available", "error", "sample_titles"} for a product title.
+
+    "available" is only True if at least one returned listing actually shares
+    words with the query - see scrapers/alibaba.py for the false-positive
+    this fixes (a live run once reported "found" off unrelated filler text).
+    """
     query = "+".join(product_title.split()[:6])
     url = SEARCH_URL.format(query=query)
     html, error = common.fetch(url)
@@ -26,10 +31,12 @@ def check_sourcing(product_title: str, sample_size: int = 5):
         return {"available": None, "error": error, "sample_titles": []}
 
     titles = common.extract_titles(html)
-    if not titles:
+    relevant = [t for t in titles if common.shares_content_tokens(product_title, t)]
+    if not relevant:
         return {
             "available": None,
-            "error": "No listings parsed - AliExpress likely blocked the request or changed page layout.",
+            "error": "No relevant listings found - AliExpress may have blocked the request, changed page "
+            "layout, or genuinely has nothing matching.",
             "sample_titles": [],
         }
-    return {"available": True, "error": None, "sample_titles": titles[:sample_size]}
+    return {"available": True, "error": None, "sample_titles": relevant[:sample_size]}

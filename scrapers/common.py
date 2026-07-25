@@ -13,6 +13,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from config import REQUEST_DELAY_SECONDS, REQUEST_HEADERS, REQUEST_TIMEOUT_SECONDS
+from product_titles import looks_like_product_title
 
 _NEXT_DATA_RE = re.compile(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
 
@@ -82,10 +83,34 @@ def extract_title_like_text(html, min_len=15, max_len=120):
     return seen
 
 
+_TOKEN_RE = re.compile(r"[a-zA-Z]+")
+
+
+def shares_content_tokens(query: str, title: str, min_shared: int = 2) -> bool:
+    """True if `title` shares at least `min_shared` words (len > 2) with `query`.
+
+    Used to gate the Alibaba/AliExpress "supplier found" claim - without this,
+    check_sourcing() reported `available: True` for whatever extract_titles()
+    returned, even when it was irrelevant filler text ("FREE with any
+    purchase | Upgraded Pet Hair Cleaning Gloves...") that happened to survive
+    the junk filter but has nothing to do with the product being checked.
+    """
+    query_tokens = {w.lower() for w in _TOKEN_RE.findall(query) if len(w) > 2}
+    title_tokens = {w.lower() for w in _TOKEN_RE.findall(title) if len(w) > 2}
+    return len(query_tokens & title_tokens) >= min_shared
+
+
 def extract_titles(html):
-    """Try __NEXT_DATA__ first, fall back to the generic text scan."""
+    """Try __NEXT_DATA__ first, fall back to the generic text scan.
+
+    Filtered through looks_like_product_title() - this is the one path that
+    feeds the Alibaba/AliExpress sourcing checks, which never go through
+    aggregator.filter_dropshippable, so junk (nav menus, filters, breadcrumbs)
+    needs to be rejected here or it sails straight into a sourcing "found"
+    claim.
+    """
     data = extract_next_data(html)
     titles = find_product_like_strings(data) if data else []
     if not titles:
         titles = extract_title_like_text(html)
-    return titles
+    return [t for t in titles if looks_like_product_title(t)]

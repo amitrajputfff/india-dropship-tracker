@@ -14,6 +14,7 @@
   th { background: #f4f4f4; }
   .score-bar-wrap { background: #eee; border-radius: 4px; width: 120px; height: 10px; display: inline-block; overflow: hidden; }
   .score-bar { background: #2e7d32; height: 100%; }
+  .near-miss .score-bar { background: #9e9e9e; }
   .badge { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 10px; background: #e3f2fd; color: #1565c0; margin: 0 0.2rem 0.2rem 0; }
   .badge.trend { background: #fff3e0; color: #e65100; }
   .badge.sourcing-yes { background: #e8f5e9; color: #2e7d32; }
@@ -31,6 +32,7 @@
     th { background: #1e1e1e; }
     th, td { border-color: #2a2a2a; }
     .score-bar-wrap { background: #333; }
+    .near-miss .score-bar { background: #555; }
     .badge { background: #123a5c; color: #90caf9; }
     .badge.trend { background: #4a2c00; color: #ffcc80; }
     .badge.sourcing-yes { background: #1b3a1e; color: #81c784; }
@@ -43,38 +45,212 @@
 <body>
 
 <h1>Top India Dropshipping Products</h1>
-<p class="subtitle">Generated 2026-07-25 - Amazon.in, Flipkart, Meesho, Myntra &amp; Snapdeal x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products (OnePlus, Jockey, Amazon Brand, etc.) are filtered out first, then every survivor is scored against the standard 13-KPI dropship rubric - only products matching 7+ of 13 make this list.</p>
+<p class="subtitle">Generated 2026-07-25 - Amazon.in bestsellers x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products are filtered out first (keyword blocklist + an LLM brand check), then every survivor is scored against the standard 13-KPI dropship rubric.</p>
 
 
 
-<h2>Top 1 picks passing the 7/13 KPI bar</h2>
-<p class="muted">Every candidate is scored against the 13-point rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) - only products matching 7+ appear here at all, ranked by KPI count first, then by bestseller rank / cross-platform / Google Trends momentum. It's normal for this list to have fewer than 10 entries on a given day - that's the rubric being strict, not a bug. The Alibaba/AliExpress columns are a supplier-availability gut-check on top of that - a signal to investigate, not an auto-buy decision.</p>
+
+
+<h2>Top 0 picks passing the 7/13 KPI bar</h2>
+<p class="muted">Every candidate is scored against the 13-point rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) - ranked by KPI count first, then by bestseller rank/Google Trends momentum. The Alibaba/AliExpress columns are a supplier-availability gut-check on top of that - a signal to investigate, not an auto-buy decision.</p>
+
+  <p>No products passed the 7/13 KPI bar today - check the Amazon source status below (a source outage means fewer candidates to score, not that nothing qualified).</p>
+
+
+
+<h2>Near misses - did NOT pass the 7/13 bar</h2>
+<p class="muted">Only 0 product(s) cleared the rubric today, so these 10 are backfilled from the same judged pool to round the list out to 10 - they scored below 7/13 and did <strong>not</strong> pass. Treat this section as "worth a second look," not a recommendation.</p>
+
 <table>
   <tr><th>#</th><th>Product</th><th>KPIs matched</th><th>Momentum score</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr>
   
-  <tr>
+  <tr class="near-miss">
     <td>1</td>
-    <td>Purepet Adult Dry Cat Food 1kg | Ocean Fish Flavour | Hairball Protection | Heart Care with Taurine | Skin & Coat Health</td>
+    <td>Ghar Soaps Sandalwood & Saffron Magic Bar For Bath (300 Gms Pack Of 3) | Paraben Free | Chandan & Kesar Bath Soap | Handmade</td>
     <td>
-      <strong>7/13</strong>
-      <br>
-      <span class="badge trend">Easy to ship</span><span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span><span class="badge trend">Saves people time</span><span class="badge trend">Solves a real problem / fills a gap</span><span class="badge trend">Improves quality of life</span><span class="badge trend">Woman-dominated audience</span>
+      <strong>5/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 17.41978434s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Improves confidence</span><span class="badge trend">Improves convenience</span><span class="badge trend">Saves people money</span><span class="badge trend">Extremely unique</span><span class="badge trend">Woman-dominated audience</span>
     </td>
     <td>
       <div class="score-bar-wrap"><div class="score-bar" style="width: 100.0%;"></div></div>
-      1.21
+      1.0
     </td>
-    <td><span class="badge">Amazon.in - Pet Supplies</span><span class="badge">Amazon.in - Pet Supplies</span><span class="badge">Amazon.in - Pet Supplies</span></td>
+    <td><span class="badge">Amazon.in - Beauty</span></td>
     <td>-</td>
-    <td><span class="badge sourcing-unknown" title="No listings parsed - Alibaba likely blocked the request or changed page layout.">blocked/unknown</span></td>
-    <td><span class="badge sourcing-yes" title="FREEwith any purchase | with any purchase | Upgraded Pet Hair Cleaning Removal Gloves Pet Grooming Finger Glove Reusable Sofa Carpets Cat Dog Hair Cleaning Tools | New shoppers save $1.52Top selling on AliExpress | New shoppers save $1.52">found</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>2</td>
+    <td>LifeKrafts Polyester Magnetic Mosquito Net for All Door Types & Sizes, Auto-Closing Insect Screen/Curtain to Keep Mosquito &</td>
+    <td>
+      <strong>4/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 10.012708776s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '10s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span><span class="badge trend">Saves people time</span><span class="badge trend">Solves a real problem / fills a gap</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 100.0%;"></div></div>
+      1.0
+    </td>
+    <td><span class="badge">Amazon.in - Garden & Outdoors</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>3</td>
+    <td>Classic Mosquito Net for King Size Bed | 30 GSM Polyester Fine Mesh | Foldable Pop Up Machardani for Double Bed | 360° Mosqui</td>
+    <td>
+      <strong>4/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 53.240774683s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '53s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Easy to ship</span><span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span><span class="badge trend">Solves a real problem / fills a gap</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 50.0%;"></div></div>
+      0.5
+    </td>
+    <td><span class="badge">Amazon.in - Garden & Outdoors</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>4</td>
+    <td>Happi Planet Magic Eraser | Pack of 4 | No Scratch Multi-Surface Cleaning Sponge | Removes 100+ Tough Stains | Just Add Water</td>
+    <td>
+      <strong>3/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 19.264802058s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '19s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Saves people money</span><span class="badge trend">Extremely unique</span><span class="badge trend">Woman-dominated audience</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 100.0%;"></div></div>
+      1.0
+    </td>
+    <td><span class="badge">Amazon.in - Home Improvement</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>5</td>
+    <td>SOFTSPUN Microfiber Cloth - 4 pcs - 40x40 cms - 340 GSM Grey! Thick Lint & Streak-Free Multipurpose Cloths - Automotive Micro</td>
+    <td>
+      <strong>3/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 11.859756699s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '11s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span><span class="badge trend">Saves people money</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 100.0%;"></div></div>
+      1.0
+    </td>
+    <td><span class="badge">Amazon.in - Car & Motorbike</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>6</td>
+    <td>Simple Kind To Skin Refreshing Facial Wash 150 ml | 100% Soap-Free Facewash that doesn't dry out your skin| For All Skin Type</td>
+    <td>
+      <strong>3/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 794.899803ms.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '0s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Improves confidence</span><span class="badge trend">Improves convenience</span><span class="badge trend">Woman-dominated audience</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 50.0%;"></div></div>
+      0.5
+    </td>
+    <td><span class="badge">Amazon.in - Beauty</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>7</td>
+    <td>Lifelong LLKS03 Foldable Kick Skating Cycle| Skate Scooter for Kids(Max User Weight: 50Kg) Kids Scooter (Pink, Blue)</td>
+    <td>
+      <strong>3/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 58.961414397s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '58s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Easy to ship</span><span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 50.0%;"></div></div>
+      0.5
+    </td>
+    <td><span class="badge">Amazon.in - Toys & Games</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>8</td>
+    <td>Babique Dog Plush Soft Toy Cute Kids Animal Home Decor Boys/Girls/Baby (25 cm, White)</td>
+    <td>
+      <strong>1/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 15.576110798s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Woman-dominated audience</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 100.0%;"></div></div>
+      1.0
+    </td>
+    <td><span class="badge">Amazon.in - Toys & Games</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>9</td>
+    <td>Safari Pentagon Pro 8 Wheels 66cm Medium Size Trolley Bag, Hard Case Polypropylene, 360º Wheeling Check in Luggage, Suitcase</td>
+    <td>
+      <strong>1/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 8.155757371s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '8s'}]}})">(fallback)</span><br>
+      <span class="badge trend">High perceived value</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 50.0%;"></div></div>
+      0.5
+    </td>
+    <td><span class="badge">Amazon.in - Luggage & Bags</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+  </tr>
+  
+  <tr class="near-miss">
+    <td>10</td>
+    <td>ShineXPro Microfiber Cleaning Cloth Roll, 20Pcs, 4000 Times Washable - 10X Cheaper Than Paper Kitchen Towel Roll - Ultra Abso</td>
+    <td>
+      <strong>1/13</strong>
+      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 2.646348573s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '2s'}]}})">(fallback)</span><br>
+      <span class="badge trend">Woman-dominated audience</span>
+    </td>
+    <td>
+      <div class="score-bar-wrap"><div class="score-bar" style="width: 50.0%;"></div></div>
+      0.5
+    </td>
+    <td><span class="badge">Amazon.in - Home Improvement</span></td>
+    <td>-</td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
+    <td><span class="badge sourcing-unknown">not checked</span></td>
   </tr>
   
 </table>
 
+
+
 <h2>Google Trends - India (today)</h2>
 <div class="trend-terms">
-  <span>റോഡ്രി</span><span>वृष राशि</span><span>ധര്മ്മേന്ദ്ര പ്രധാന്</span><span>രമേശ് ചെന്നിത്തല</span><span>imd heavy rainfall forecast</span><span>बैंक</span><span>indian idol season 16 winner</span><span>wetter morgen</span><span>bleach</span><span>prahlad joshi</span>
+  <span>valter walker</span><span>தனுஷ்</span><span>नेपाल</span><span>vikrant massey</span><span>गौतम गंभीर</span><span>bhuvneshwar kumar</span><span>psv vs villarreal</span><span>റോഡ്രി</span><span>president of india</span><span>ധര്മ്മേന്ദ്ര പ്രധാന്</span>
 </div>
 
 <h2>Amazon.in bestsellers by category</h2>
@@ -90,8 +266,6 @@
     
     <tr><td>4</td><td>Fresh Chrysanthemum/Shevanti Flower Yellow, 100 g</td></tr>
     
-    <tr><td>5</td><td>Amazon Basics 3-Way Foldable Cloth Drying Stand – Lightweight Mild Steel Collapsible Rack with 20 Rails & 42 Ft Drying Length</td></tr>
-    
     <tr><td>6</td><td>ATOM ALISTON K1 Series Digital Kitchen Weighing Scale 10 kg, Electronic Weight Machine with LCD Display for Baking, Cooking,</td></tr>
     
     <tr><td>7</td><td>JIALTO Plastic 10 Pcs Self Adhesive Wall Hooks - Heavy Duty Transparent Hook for Photo Frames, Wall Clocks, Keys - No Damage,</td></tr>
@@ -106,13 +280,7 @@
     
     <tr><td>13</td><td>Wakefit 100% Waterproof Premium Cotton Mattress Protector | Breathable and Hypoallergenic Ultra Soft Fitted Bed Protector 78"</td></tr>
     
-    <tr><td>14</td><td>Milton Rapid Electric Kettle 1.8L | 1500 Watts | Stainless Steel Hot Water portable Electric Kettle for Home, Office | Auto S</td></tr>
-    
     <tr><td>15</td><td>WARMEO MICROMATE Microwave-Safe Stainless Steel Lunch Box, Bpa Free, Perfect for Office, School, Travelling, Combo(800ml+150</td></tr>
-    
-    <tr><td>16</td><td>Milton Aura 1000 Thermosteel Water Bottle, 24 Hr Hot and Cold I Leak Proof Lid, ISI Certified I Vacuum Insulated I for Office</td></tr>
-    
-    <tr><td>17</td><td>One94Store Astronaut Galaxy Projector Night Light – 360° Rotating Nebula Star Projector with Remote Control, Timer & Adjustab</td></tr>
     
     <tr><td>18</td><td>DALUCI Self Adhesive Wall Hooks - 20 Pcs Heavy Duty Wall Hooks for Hanging | Nail Free Sticky Hooks for Wall Heavy Items With</td></tr>
     
@@ -144,13 +312,7 @@
     
     <tr><td>7</td><td>Robustt Heavy Duty Rubber Hand gloves - 1 Pair (Free Size, Multicolor) for Dishwashing, gardening, kitchen cleaning</td></tr>
     
-    <tr><td>8</td><td>Gala Stainless Steel Scrubber - 1 Piece for Kitchen Utensils Cleaning</td></tr>
-    
     <tr><td>9</td><td>URBANMONK 39 Inch Silicon Door Bottom Sealing Strip | Self Adhesive Gap Filler Rubber | Guard Protector From Cockroach, Insec</td></tr>
-    
-    <tr><td>10</td><td>Gala Steel Scrubber Combo Set (Pack of 6), Stainless Steel Scrubber for Utensils, Scrubber for Kitchen</td></tr>
-    
-    <tr><td>11</td><td>Spotzero by Milton Prime Stainless Steel Wringer Spin Mop with Big Wheel, Puller Handle, Bucket Floor Cleaning and Mopping Sy</td></tr>
     
     <tr><td>12</td><td>Scotch-Brite Scrub Sponge - Pack of 6 | Kitchen Scrubber with Sponge for Everyday Utensil Cleaning</td></tr>
     
@@ -180,15 +342,7 @@
     
     <tr><td>3</td><td>Ghar Soaps De-Tan Face Wash | For Tan Reducing, Brightening & Glowing Skin | With Sandalwood, Saffron, Coconut Oil & Goat mil</td></tr>
     
-    <tr><td>4</td><td>Cetaphil Gentle Skin Hydrating Face Wash 118ml, Paraben Free, Sulphate-Free Gentle Skin Hydrating Cleanser with Niacinamide,</td></tr>
-    
-    <tr><td>5</td><td>The Derma Co Sali-Cinamide Anti-Acne Face Wash with 2% Salicylic Acid & 2% Niacinamide - 80 ml | Clears Acne & Marks | Remove</td></tr>
-    
     <tr><td>6</td><td>Scalpe Pro Daily Anti-Dandruff Shampoo | Removes Dandruff from Source | Prevents Itching & Irritation | Scalpe Science | Clim</td></tr>
-    
-    <tr><td>7</td><td>Be Bodywise 6% AHA BHA Underarm Roll-on Deodorant for Even Tone Skin,Reduces Body Odor & Pigmentation | 1% Mandelic, 4% Lacti</td></tr>
-    
-    <tr><td>8</td><td>Bare Anatomy Anti-Dandruff Shampoo | Up To 100% Dandruff Reduction | ZPTO-Free | pH 5.3 | Salicylic Acid, Piroctone Olamine &</td></tr>
     
     <tr><td>9</td><td>L'Oreal Paris Extraordinary Oil Hair Serum Powered by Floral Oils for All Hair Types, Volume- 100 ml, Makes hair frizz-free,</td></tr>
     
@@ -201,8 +355,6 @@
     <tr><td>13</td><td>WishCare Hair Growth Serum For Scalp | 94% Saw New Hair Growth | Redensyl & Rosemary Oil | 100% Saw Hairfall Reduction | In-V</td></tr>
     
     <tr><td>14</td><td>L'Oréal Paris Permanent Hair Colour, Radiant At-Home Hair Colour with up to 100% Grey Coverage, Pro-Keratin, Up to 8 Weeks of</td></tr>
-    
-    <tr><td>15</td><td>The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50 PA++++ | Hydrating, Lightweight & Non-Greasy | No White Cast | Broad Spe</td></tr>
     
     <tr><td>17</td><td>RE' EQUIL Ultra Matte Dry Touch Sunscreen | SPF 50 PA++++ | Water & Sweat Resistant | No White Cast, Non-Greasy & Non-Comedog</td></tr>
     
@@ -272,8 +424,6 @@
     
     <tr><td>6</td><td>Boldfit Yoga Mats For Women and Men Exercise For Home Workout Gym Anti Slip EVA Material Yoga Mat 4Mm For Kids Gym Mats - Gre</td></tr>
     
-    <tr><td>7</td><td>Nivia Storm White Moulded Football with Ball Pump Football - Size: 5 (Pack of 1, White)</td></tr>
-    
     <tr><td>8</td><td>Boldfit Heavy Resistance Band for Workout Set Exercise & Stretching Pull Up Bands for Home Exercise for Gym Men & Women Loop</td></tr>
     
     <tr><td>9</td><td>Yonex Mavis 350 Green Cap Nylon Shuttlecock (Yellow)</td></tr>
@@ -304,43 +454,9 @@
   <table>
     <tr><th>Rank</th><th>Title</th></tr>
     
-    <tr><td>1</td><td>Purepet Adult Dry Cat Food 1kg | Ocean Fish Flavour | Hairball Protection | Heart Care with Taurine | Skin & Coat Health</td></tr>
-    
-    <tr><td>2</td><td>Meat Up Dog Treats Biscuits 2kg (2x1kg) | Real Chicken Flavour | Remove Plaque & Tartar Build-up | Vitamins & Minerals | Prom</td></tr>
-    
-    <tr><td>3</td><td>Purepet Adult Dry Cat Food 1kg | Mackerel Flavour | Hairball Protection | Heart Care with Taurine | Skin Health</td></tr>
-    
-    <tr><td>4</td><td>Drools Adult Wet Dog Food 0.9kg (150g x 6) Pack of 6 | Real Chicken and Chicken Liver Chunks in Gravy | Healthy Skin and Coat</td></tr>
-    
-    <tr><td>5</td><td>Pedigree Adult Wet Dog Food, Chicken & Liver Chunks in Gravy, 70 g (Pack of 30), Complete & Balanced Meal for Adult Dogs</td></tr>
-    
-    <tr><td>6</td><td>Pedigree Adult Dry Dog Food, Chicken & Vegetables, 3 kg, Contains 37 Essential Nutrients, 100% Complete & Balanced Food for A</td></tr>
-    
-    <tr><td>7</td><td>Drools Adult Dry Dog Food 4.2kg (3kg + 1.2kg Free) | Chicken & Egg Flavour | Supports Active Behaviour | Digestive Health & I</td></tr>
-    
     <tr><td>8</td><td>Foodie Puppies Natural Bentonite Cat Litter Sand - 5kg with Lavender Fragrance for Cats and Kittens | Clean Low-dust Strong D</td></tr>
     
-    <tr><td>9</td><td>Whiskas Adult (1+ Years) Dry Cat Food, Ocean Fish Flavour, 1.2 kg, Contains 41 Essential Nutrients, Complete & Balanced Nutri</td></tr>
-    
-    <tr><td>10</td><td>Meat Up Adult Dry Dog Food 6kg (3kg + 3kg) | Chicken Flavour | Glucosamine for Healthy Joints & Bones | Enriched with Vitamin</td></tr>
-    
-    <tr><td>11</td><td>Whiskas Junior Mother Cat & Kitten (2-12 Months) Dry Cat Food, Ocean Fish Flavour, 1.1 kg, Contains 41 Essential Nutrients, C</td></tr>
-    
-    <tr><td>12</td><td>Amazon Basics Scoopable Smart White Bentonite Scented Cat Litter | 10 Kg | 5 Kg X 2 Packs | Organic | Bentonite From Turkey |</td></tr>
-    
-    <tr><td>13</td><td>Purepet Adult Dry Cat Food 1kg | Tuna & Salmon Flavour | Hairball Protection | Heart Care with Taurine | Skin Health</td></tr>
-    
-    <tr><td>14</td><td>Whiskas Adult (1+ Years) Wet Cat Food, Chicken in Gravy, 80 g (Pack of 14), Hydrating Food Made With Real Chicken, 100% Compl</td></tr>
-    
     <tr><td>15</td><td>Petoska Lavender Cat Litter 5kg | 100% Natural Bentonite Clay | Clumping Cat Litter with Fast Odour Lock, Low Dust & Gentle o</td></tr>
-    
-    <tr><td>16</td><td>Whiskas Wet Cat Food for Adult Cats (1+Years), Tuna in Jelly Flavour, 80g (Pack of 14)</td></tr>
-    
-    <tr><td>17</td><td>Drools Adult Dry Dog Food 10kg | Chicken Flavour | Optimum Protein & Energy Ratio | High-Grade Protein with Vitamins & Minera</td></tr>
-    
-    <tr><td>18</td><td>Purepet Adult Dry Dog Food 10kg | Meat & Rice Flavour | Promotes Health & Vitality | Immune Support | Healthy Digestion | Nut</td></tr>
-    
-    <tr><td>19</td><td>Pedigree Adult Dry Dog Food, Meat & Rice, 3 kg, Contains 37 Essential Nutrients, 100% Complete & Balanced Food for Adult Dogs</td></tr>
     
     <tr><td>20</td><td>Hipkoo Exclusive Cat Litter 20Kg 100% Natural Unscented Bentonite Clay Dust Free Fragrance Free Absorbent Eco-Friendly Sand f</td></tr>
     
@@ -348,8 +464,49 @@
   
 
   <h3>Car & Motorbike
-    <span class="error">- No products parsed - Amazon likely blocked the request or changed page layout. Open the URL in a browser, view source, and check whether product slots still use id="p13n-asin-index-N".</span>
+    <span class="ok">- ok</span>
   </h3>
+  
+  <table>
+    <tr><th>Rank</th><th>Title</th></tr>
+    
+    <tr><td>1</td><td>SOFTSPUN Microfiber Cloth - 4 pcs - 40x40 cms - 340 GSM Grey! Thick Lint & Streak-Free Multipurpose Cloths - Automotive Micro</td></tr>
+    
+    <tr><td>2</td><td>Motul Chain Lube & Chain Cleaner Combo for Bikes – C2 Lubrication + C1 Deep Cleaning Spray for Superior Chain Care, Suitable</td></tr>
+    
+    <tr><td>3</td><td>Godrej aer O – Hanging Car Air Freshener – Assorted Pack of 3 (22.5g) | Gel Lasts up to 30 days | Car Accessories</td></tr>
+    
+    <tr><td>4</td><td>IFTEX Clean System G for All Petrol Cars (200 ml) / e20 Petrol Fuel Treatment and Injector Cleaner for Cleaning deposits and</td></tr>
+    
+    <tr><td>7</td><td>Godrej aer O Hanging Car Air Freshener Gel | Car Accessories | Cool Aqua (7.5G)</td></tr>
+    
+    <tr><td>8</td><td>Involve Your Senses One Musk Organic Car Perfume, Involve Your Senses Strong Fiber Air Freshener to Freshen'up Your Car - ION</td></tr>
+    
+    <tr><td>9</td><td>SOFTSPUN Microfiber Cloth for Car 1400 GSM 40x60 cms 1 Pc Aqua Blue/Grey | Twisted Loop Super Absorbent Towel - Edgeless Desi</td></tr>
+    
+    <tr><td>10</td><td>Boldfit face mask for Bikers Full face mask for Bikers Helmet Head Cover Balaclava for Men Bike Riding & Biker Head Cover for</td></tr>
+    
+    <tr><td>11</td><td>ShineXPro Car Duster - Lint-Free & Scratch-Free Car Cleaner Brush with Long Handle - Car Dust Cleaner features Paraffin Wax C</td></tr>
+    
+    <tr><td>12</td><td>WD-40 Multipurpose Spray, Rust Remover, Cleans Bike Chains, Hinge Lubricant, Loosens Jammed Parts, Degreaser, and Cleaning Ag</td></tr>
+    
+    <tr><td>13</td><td>3M IA260166391 Auto Specialty Shampoo (500 ml)</td></tr>
+    
+    <tr><td>14</td><td>FABTEC Waterproof Car Body Cover for Maruti Baleno with Mirror and Antenna Pocket, Soft Cotton Lining, Triple Stitched (Heat</td></tr>
+    
+    <tr><td>15</td><td>ShineXPro Microfiber Car Cleaning Cloth - OG Soft 500 GSM Extra Large (35x75 CM) Microfiber Cloth for Car and Bike - Suede Ed</td></tr>
+    
+    <tr><td>16</td><td>Motul C2 Motorcycle Chain Lube | Advanced Lubrication Spray for Bike Chains | Protects Against Wear & Corrosion, Improves Cha</td></tr>
+    
+    <tr><td>17</td><td>IFTEX Clean System 2/3 e20 Fuel Additive for all Petrol Bike and Scooter, Petrol Fuel System and Injector Cleaner for cleanin</td></tr>
+    
+    <tr><td>18</td><td>Vega Crux Dual Visor Flip Up Motorcycle Helmet with Lightweight Shell, Flip-Up Chin Guard, Dual Visor System, Shock Absorbing</td></tr>
+    
+    <tr><td>19</td><td>MICHELIN Premium All-Weather Wiper Blade | High-Carbon Steel Strip with Natural Rubber & Graphite Coating | Smooth, Silent &</td></tr>
+    
+    <tr><td>20</td><td>Jopasu Car Duster with Paraffin Wax-Treated Cotton Strands | Scratch-Free Dry Dust Cleaner for Cars | Lint Free Reusable Exte</td></tr>
+    
+  </table>
   
 
   <h3>Garden & Outdoors
@@ -369,11 +526,7 @@
     
     <tr><td>5</td><td>Shadow Securitronics Gecko Aerosol Based Odour Free Herbal Lizard Repellent Spray | Eco-Friendly & Biodegradable | Irritant &</td></tr>
     
-    <tr><td>6</td><td>Mortein 45ml x 6 (Buy 4 Get 2 Free) Fits All Machines | SmartPlus Mosquito Repellent Refill | Mosquito Repellent & Killer | 1</td></tr>
-    
     <tr><td>7</td><td>Konvio Neer TDS Meter for Water Testing | Digital TDS meter| PPM Tester for Drinking Water, RO, Aquarium & Hydroponics | Tota</td></tr>
-    
-    <tr><td>8</td><td>Mortein Advanced Anti-Mosquito Racquet | Mosquito Bat | Electric Fly Swatter | Mosquito Killer Racket | Bat to Hit Mosquito,</td></tr>
     
     <tr><td>9</td><td>Ugaoo Organic Vermicompost for Plants 5 Kg | Pure Earthworm Compost Manure Rich in NPK & Micronutrients | Natural Plant Food</td></tr>
     
@@ -396,395 +549,76 @@
   </table>
   
 
-
-
-
-
-<h2>Flipkart - popularity search by keyword</h2>
-<p class="muted">No dedicated bestseller page on Flipkart, so this approximates it via popularity-sorted search - cross-check before trusting on its own.</p>
-
-  <h3>"silicone kitchen gadget"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=silicone+kitchen+gadget&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a89812a50>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
-
-  <h3>"sink splash guard"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=sink+splash+guard&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a88596f50>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
-
-  <h3>"gap cover strip"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=gap+cover+strip&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a89812a50>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
-
-  <h3>"reusable stretch lids"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=reusable+stretch+lids&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a88597190>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
-
-  <h3>"cable organizer clip"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=cable+organizer+clip&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a8859d150>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
-
-  <h3>"posture corrector"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=posture+corrector&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a8859ee10>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
-
-  <h3>"car seat organizer"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=car+seat+organizer&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a885b0dd0>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
-
-  <h3>"silicone ice tray"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=silicone+ice+tray&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a885b3010>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
-
-  <h3>"multipurpose storage rack"
+  <h3>Luggage & Bags
     <span class="ok">- ok</span>
   </h3>
   
   <table>
     <tr><th>Rank</th><th>Title</th></tr>
     
-    <tr><td>1</td><td>ExplorePlusLoginBecome a SellerMoreCart</td></tr>
+    <tr><td>2</td><td>Safari Pentagon Pro 8 Wheels 66cm Medium Size Trolley Bag, Hard Case Polypropylene, 360º Wheeling Check in Luggage, Suitcase</td></tr>
     
-    <tr><td>2</td><td>Kitchen, Cookware & Serveware</td></tr>
+    <tr><td>3</td><td>TEKCOOL Umbrella, UV Big Size Umbrella for Sun Protection Rain Windproof Strong Large 3 Fold For Men Women Kids Boys Girls Pe</td></tr>
     
-    <tr><td>3</td><td>Kitchen Storage & ContainersKitchen ContainersOil DispensersCondiment SetsFruit BasketsKitchen RacksShow 3 more</td></tr>
+    <tr><td>4</td><td>Safari Cabin Genius Alley 55cm Trolley Bag Hard Case Polypropylene, 4 Spinner Wheels, 360 Degree Wheeling Carry on Luggage, T</td></tr>
     
-    <tr><td>4</td><td>Kitchen Storage & Containers</td></tr>
+    <tr><td>5</td><td>Kerok Portable Auto Travel Umbrella - Windproof for Rain, Strong for Wind, Auto Open/Close Button, Perfect Car Umbrella for M</td></tr>
     
-    <tr><td>5</td><td>Kitchen ContainersOil DispensersCondiment SetsFruit BasketsKitchen RacksShow 3 more</td></tr>
+    <tr><td>6</td><td>PESOMA Mini Umbrella with Case for Men & Women (Manual Open) Compact Travelling Pocket Umbrella, Polyester & UV Protect Fabri</td></tr>
     
-    <tr><td>6</td><td>Kitchen Containers</td></tr>
+    <tr><td>7</td><td>Boldfit Rain Cover for Backpack Travel Essentials Rain Cover for Bag Travel Accessories Bags Water Resistance Dustproof Water</td></tr>
     
-    <tr><td>7</td><td>Customer Ratings</td></tr>
+    <tr><td>8</td><td>Boldfit Shoe Bag for Travel Bag for Man & Women Shoe Cover for Storage at Home Gym Reusable Travelling Accessories Organizer</td></tr>
     
-    <tr><td>8</td><td>4★ & above3★ & above2★ & above1★ & above</td></tr>
+    <tr><td>9</td><td>Billebon Premium Neck Pillow for Travelling Airplane Travel Pillow Comfortable Head Rest Neck Holder Pillow (Grey)</td></tr>
     
-    <tr><td>9</td><td>Min5001000150020004000to50010001500200040004000+</td></tr>
+    <tr><td>10</td><td>FLYNGO Umbrella for Rain Big Size with Carabiner Handle, UV Coated 3-Fold Travel Umbrella for Sun Protection, Windproof Reinf</td></tr>
     
-    <tr><td>10</td><td>Min5001000150020004000</td></tr>
+    <tr><td>11</td><td>Lyrovo Nylon 7Pcs Travel Packing Cubes For Clothes Laundry Toiletry Cosmetics Luggage Makeup Pouch Accessories Organizer Bag</td></tr>
     
-    <tr><td>11</td><td>50010001500200040004000+</td></tr>
+    <tr><td>12</td><td>Roughhouse UV Umbrella for Sun & Rain – Auto Open/Close | Windproof | Travel-Friendly 3-Fold Design | SPF 50+ Coated | Big Ca</td></tr>
     
-    <tr><td>12</td><td>Special PriceBuy More, Save MoreNo Cost EMI</td></tr>
+    <tr><td>13</td><td>WildHorn Genuine Leather Wallet for Men | Slim Bifold Wallet with RFID Blocking | Multiple Card Slots & Coin Pocket | Premium</td></tr>
     
-    <tr><td>13</td><td>Buy More, Save More</td></tr>
+    <tr><td>14</td><td>Storite Dust & Rain Cover For Standard Backpack, 30L-35L, Black | With Pouch, Water Resistance, Dustproof, Elastic Adjustable</td></tr>
     
-    <tr><td>14</td><td>GST Invoice Available</td></tr>
+    <tr><td>15</td><td>Lifelong Shoe Bags for Travel, Drawstring Travel Shoe Bags for Packing, Dustproof Portable Travel Shoe Storage Bag for Men an</td></tr>
     
-    <tr><td>15</td><td>HomeKitchen, Cookware & ServewareKitchen Storage & Containers</td></tr>
+    <tr><td>16</td><td>Wazdorf Nylon 41 Liter Expandable Travel Bags for Women, Duffle Bags for Women Luggage, Foldable Vanity Traveling Bag, Waterp</td></tr>
     
-  </table>
-  
-
-  <h3>"led lights"
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
+    <tr><td>17</td><td>Aristocrat Comet Cabin Polycarbonate Hard Case 8-Wheel Trolley Bag, Green | Durable Case, Lightweight, Combination Lock, Stur</td></tr>
     
-    <tr><td>1</td><td>ExplorePlusLoginBecome a SellerMoreCart</td></tr>
+    <tr><td>18</td><td>Boldfit Gym Bags for Men Compact Sports Duffle for Women Unisex Duffle Bag for Carry & Travel Adjustable for Shoes Towel Duff</td></tr>
     
-    <tr><td>2</td><td>CATEGORIESHome LightingUtility LightingDecor lighting & Accessories</td></tr>
+    <tr><td>19</td><td>REXERA UV Travel Mini Folding Ultra Compact pastel Umbrella with Hard Case, Manual Open 6 Ribs Lightweight Premium Portable,</td></tr>
     
-    <tr><td>3</td><td>Home LightingUtility LightingDecor lighting & Accessories</td></tr>
-    
-    <tr><td>4</td><td>Utility LightingDecor lighting & Accessories</td></tr>
-    
-    <tr><td>5</td><td>Utility Lighting</td></tr>
-    
-    <tr><td>6</td><td>Decor lighting & Accessories</td></tr>
-    
-    <tr><td>7</td><td>Customer Ratings</td></tr>
-    
-    <tr><td>8</td><td>4★ & above3★ & above</td></tr>
-    
-    <tr><td>9</td><td>Min5001000150020005000to50010001500200050005000+</td></tr>
-    
-    <tr><td>10</td><td>Min5001000150020005000</td></tr>
-    
-    <tr><td>11</td><td>50010001500200050005000+</td></tr>
-    
-    <tr><td>12</td><td>GST Invoice Available</td></tr>
-    
-    <tr><td>13</td><td>HomeHome Lighting</td></tr>
-    
-    <tr><td>14</td><td>Sort ByRelevancePopularityPrice -- Low to HighPrice -- High to LowNewest First</td></tr>
-    
-    <tr><td>15</td><td>Price -- Low to High</td></tr>
+    <tr><td>20</td><td>Stealodeal Brown 28 Slots Leather Debit/Credit/ATM Men & Women Card Holder</td></tr>
     
   </table>
   
 
-  <h3>"dancing cactus toy"
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>1</td><td>ExplorePlusLoginBecome a SellerMoreCart</td></tr>
-    
-    <tr><td>2</td><td>CATEGORIESToys and GamesAction ToysPuzzles and CubesMusical ToysLCD Writing PadsRole Play ToysShow 6 more</td></tr>
-    
-    <tr><td>3</td><td>Toys and GamesAction ToysPuzzles and CubesMusical ToysLCD Writing PadsRole Play ToysShow 6 more</td></tr>
-    
-    <tr><td>4</td><td>Action ToysPuzzles and CubesMusical ToysLCD Writing PadsRole Play ToysShow 6 more</td></tr>
-    
-    <tr><td>5</td><td>Puzzles and Cubes</td></tr>
-    
-    <tr><td>6</td><td>LCD Writing Pads</td></tr>
-    
-    <tr><td>7</td><td>Customer Ratings</td></tr>
-    
-    <tr><td>8</td><td>4★ & above3★ & above</td></tr>
-    
-    <tr><td>9</td><td>SALEOFFNinjatoysToyvalaHaulsaleMiranshSNISH SIGNATURE977 MORE</td></tr>
-    
-    <tr><td>10</td><td>SALEOFFNinjatoysToyvalaHaulsaleMiranshSNISH SIGNATURE</td></tr>
-    
-    <tr><td>11</td><td>SNISH SIGNATURE</td></tr>
-    
-    <tr><td>12</td><td>Min₹250₹500₹1000₹2000₹5000to₹250₹500₹1000₹2000₹5000₹5000+</td></tr>
-    
-    <tr><td>13</td><td>Min₹250₹500₹1000₹2000₹5000</td></tr>
-    
-    <tr><td>14</td><td>₹250₹500₹1000₹2000₹5000₹5000+</td></tr>
-    
-    <tr><td>15</td><td>Special PriceBuy More, Save More</td></tr>
-    
-  </table>
-  
-
-  <h3>"interactive plush toy"
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>1</td><td>ExplorePlusLoginBecome a SellerMoreCart</td></tr>
-    
-    <tr><td>2</td><td>CATEGORIESToys and GamesSoft ToysCartoon Characters Soft ToysAnimals Soft ToysTeddy Bears</td></tr>
-    
-    <tr><td>3</td><td>Soft ToysCartoon Characters Soft ToysAnimals Soft ToysTeddy Bears</td></tr>
-    
-    <tr><td>4</td><td>Cartoon Characters Soft ToysAnimals Soft ToysTeddy Bears</td></tr>
-    
-    <tr><td>5</td><td>Cartoon Characters Soft Toys</td></tr>
-    
-    <tr><td>6</td><td>Animals Soft Toys</td></tr>
-    
-    <tr><td>7</td><td>Min₹250₹500₹1000₹2000₹5000to₹250₹500₹1000₹2000₹5000₹5000+</td></tr>
-    
-    <tr><td>8</td><td>Min₹250₹500₹1000₹2000₹5000</td></tr>
-    
-    <tr><td>9</td><td>₹250₹500₹1000₹2000₹5000₹5000+</td></tr>
-    
-    <tr><td>10</td><td>WebbyTechMax SolutionAdoraRECTITUDEHaulsaleBitline345 MORE</td></tr>
-    
-    <tr><td>11</td><td>WebbyTechMax SolutionAdoraRECTITUDEHaulsaleBitline</td></tr>
-    
-    <tr><td>12</td><td>TechMax Solution</td></tr>
-    
-    <tr><td>13</td><td>Customer Ratings</td></tr>
-    
-    <tr><td>14</td><td>4★ & above3★ & above2★ & above1★ & above</td></tr>
-    
-    <tr><td>15</td><td>HomeToys and GamesSoft Toys</td></tr>
-    
-  </table>
-  
-
-  <h3>"musical baby toy"
-    <span class="error">- HTTPSConnectionPool(host='www.flipkart.com', port=443): Max retries exceeded with url: /search?q=musical+baby+toy&sort=popularity (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.flipkart.com', port=443) at 0x7f9a880c5650>, 'Connection to www.flipkart.com timed out. (connect timeout=15)'))</span>
-  </h3>
-  
 
 
 
 
-<h2>Meesho - search by keyword</h2>
-<p class="muted">Best-effort scrape of a JS-heavy storefront - check the ok/error status per keyword before trusting a day's results.</p>
-
-  <h3>"silicone kitchen gadget"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=silicone%20kitchen%20gadget</span>
-  </h3>
-  
-
-  <h3>"sink splash guard"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=sink%20splash%20guard</span>
-  </h3>
-  
-
-  <h3>"gap cover strip"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=gap%20cover%20strip</span>
-  </h3>
-  
-
-  <h3>"reusable stretch lids"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=reusable%20stretch%20lids</span>
-  </h3>
-  
-
-  <h3>"cable organizer clip"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=cable%20organizer%20clip</span>
-  </h3>
-  
-
-  <h3>"posture corrector"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=posture%20corrector</span>
-  </h3>
-  
-
-  <h3>"car seat organizer"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=car%20seat%20organizer</span>
-  </h3>
-  
-
-  <h3>"silicone ice tray"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=silicone%20ice%20tray</span>
-  </h3>
-  
-
-  <h3>"multipurpose storage rack"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=multipurpose%20storage%20rack</span>
-  </h3>
-  
-
-  <h3>"led lights"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=led%20lights</span>
-  </h3>
-  
-
-  <h3>"dancing cactus toy"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=dancing%20cactus%20toy</span>
-  </h3>
-  
-
-  <h3>"interactive plush toy"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=interactive%20plush%20toy</span>
-  </h3>
-  
-
-  <h3>"musical baby toy"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.meesho.com/search?q=musical%20baby%20toy</span>
-  </h3>
-  
 
 
 
 
-<h2>Myntra - search by keyword (fashion)</h2>
-<p class="muted">Fashion-only catalog, so this uses its own keyword list rather than the general one. Best-effort scrape of a JS-heavy storefront.</p>
-
-  <h3>"oversized t-shirt"
-    <span class="error">- HTTPSConnectionPool(host='www.myntra.com', port=443): Read timed out. (read timeout=15)</span>
-  </h3>
-  
-
-  <h3>"sneakers men"
-    <span class="error">- HTTPSConnectionPool(host='www.myntra.com', port=443): Read timed out. (read timeout=15)</span>
-  </h3>
-  
-
-  <h3>"ethnic kurta"
-    <span class="error">- HTTPSConnectionPool(host='www.myntra.com', port=443): Read timed out. (read timeout=15)</span>
-  </h3>
-  
-
-  <h3>"saree"
-    <span class="error">- HTTPSConnectionPool(host='www.myntra.com', port=443): Read timed out. (read timeout=15)</span>
-  </h3>
-  
-
-  <h3>"formal shirt"
-    <span class="error">- HTTPSConnectionPool(host='www.myntra.com', port=443): Read timed out. (read timeout=15)</span>
-  </h3>
-  
 
 
 
 
-<h2>Snapdeal - search by keyword</h2>
-<p class="muted">Best-effort scrape of a JS-heavy storefront - check the ok/error status per keyword before trusting a day's results.</p>
 
-  <h3>"silicone kitchen gadget"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=silicone+kitchen+gadget</span>
-  </h3>
-  
 
-  <h3>"sink splash guard"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=sink+splash+guard</span>
-  </h3>
-  
 
-  <h3>"gap cover strip"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=gap+cover+strip</span>
-  </h3>
-  
 
-  <h3>"reusable stretch lids"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=reusable+stretch+lids</span>
-  </h3>
-  
 
-  <h3>"cable organizer clip"
-    <span class="error">- ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))</span>
-  </h3>
-  
-
-  <h3>"posture corrector"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=posture+corrector</span>
-  </h3>
-  
-
-  <h3>"car seat organizer"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=car+seat+organizer</span>
-  </h3>
-  
-
-  <h3>"silicone ice tray"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=silicone+ice+tray</span>
-  </h3>
-  
-
-  <h3>"multipurpose storage rack"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=multipurpose+storage+rack</span>
-  </h3>
-  
-
-  <h3>"led lights"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=led+lights</span>
-  </h3>
-  
-
-  <h3>"dancing cactus toy"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=dancing+cactus+toy</span>
-  </h3>
-  
-
-  <h3>"interactive plush toy"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=interactive+plush+toy</span>
-  </h3>
-  
-
-  <h3>"musical baby toy"
-    <span class="error">- 403 Client Error: Forbidden for url: https://www.snapdeal.com/search?keyword=musical+baby+toy</span>
-  </h3>
-  
 
 
 
 <footer>
-  <p><strong>Methodology &amp; caveats:</strong> Amazon/Flipkart/Meesho/Myntra/Snapdeal data is scraped from public pages (none of them offer a free trending-products API), so any section can break silently if that site changes its layout - check the "ok"/error status per section above before trusting a day's report. Google Trends uses its public RSS feed. Cross-platform "top picks" scoring is a heuristic (token overlap between listing titles and trend terms), not a guarantee of demand. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
+  <p><strong>Methodology &amp; caveats:</strong> Amazon data is scraped from public bestseller pages (no official trending-products API exists), so it can break silently if Amazon changes its layout - check the "ok"/error status per category above before trusting a day's report. Google Trends uses its public RSS feed. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (see config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs. "Top picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by a 13-KPI rubric judged per-candidate by Gemini (with a keyword-based fallback, flagged inline, if the judge call fails). The judge call count is capped daily by the Gemini free-tier quota (20 requests/day), which is why the candidate pool and category list are deliberately sized to fit that ceiling rather than maximizing scrape volume. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere and shares words with the query - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
 </footer>
 
 </body>
