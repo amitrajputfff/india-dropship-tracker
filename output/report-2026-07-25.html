@@ -2,677 +2,612 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>India Trending Products Report - 2026-07-25</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>India Dropship Tracker — 2026-07-25</title>
 <style>
-  :root { color-scheme: light dark; }
-  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
-  h1 { font-size: 1.6rem; margin-bottom: 0.2rem; }
-  .subtitle { color: #666; margin-top: 0; }
-  h2 { border-bottom: 2px solid #ddd; padding-bottom: 0.3rem; margin-top: 2.5rem; }
-  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-  th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
-  th { background: #f4f4f4; }
-  .score-bar-wrap { background: #eee; border-radius: 4px; width: 120px; height: 10px; display: inline-block; overflow: hidden; }
-  .score-bar { background: #2e7d32; height: 100%; }
-  .near-miss .score-bar { background: #9e9e9e; }
-  .badge { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 10px; background: #e3f2fd; color: #1565c0; margin: 0 0.2rem 0.2rem 0; }
-  .badge.trend { background: #fff3e0; color: #e65100; }
-  .badge.sourcing-yes { background: #e8f5e9; color: #2e7d32; }
-  .badge.sourcing-no { background: #ffebee; color: #c62828; }
-  .badge.sourcing-unknown { background: #f0f0f0; color: #777; }
-  .error { color: #c62828; font-size: 0.9rem; }
-  .ok { color: #2e7d32; font-size: 0.9rem; }
-  .muted { color: #888; font-size: 0.85rem; }
-  .trend-terms span { display: inline-block; background: #f0f0f0; padding: 0.2rem 0.6rem; border-radius: 12px; margin: 0.15rem; font-size: 0.9rem; }
-  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.85rem; color: #777; }
+  :root {
+    --bg: #f6f4ef;
+    --bg-raised: #ffffff;
+    --ink: #1c1a17;
+    --ink-dim: #5c5750;
+    --line: #ddd8cd;
+    --line-soft: #eae6db;
+    --accent: #a8481f;
+    --accent-soft: #f1e2d7;
+
+    --good: #2c7a4a;
+    --good-soft: #e2efe4;
+    --warn: #a3760f;
+    --warn-soft: #f4ead0;
+    --bad: #b23b2e;
+    --bad-soft: #f7e3df;
+
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #17140f;
+    --bg-raised: #201c16;
+    --ink: #ece7dc;
+    --ink-dim: #a79f8f;
+    --line: #3a352b;
+    --line-soft: #2a2620;
+    --accent: #e08a4f;
+    --accent-soft: #3a2a1c;
+
+    --good: #6fbf8c;
+    --good-soft: #1e3326;
+    --warn: #dcb559;
+    --warn-soft: #3a3120;
+    --bad: #e2776b;
+    --bad-soft: #3a231f;
+  }
+
   @media (prefers-color-scheme: dark) {
-    body { background: #111; color: #eee; }
-    .subtitle, .muted, footer { color: #aaa; }
-    h2 { border-color: #333; }
-    th { background: #1e1e1e; }
-    th, td { border-color: #2a2a2a; }
-    .score-bar-wrap { background: #333; }
-    .near-miss .score-bar { background: #555; }
-    .badge { background: #123a5c; color: #90caf9; }
-    .badge.trend { background: #4a2c00; color: #ffcc80; }
-    .badge.sourcing-yes { background: #1b3a1e; color: #81c784; }
-    .badge.sourcing-no { background: #4a1414; color: #ef9a9a; }
-    .badge.sourcing-unknown { background: #222; color: #999; }
-    .trend-terms span { background: #222; }
+    :root:not([data-theme="light"]) {
+      --bg: #17140f;
+      --bg-raised: #201c16;
+      --ink: #ece7dc;
+      --ink-dim: #a79f8f;
+      --line: #3a352b;
+      --line-soft: #2a2620;
+      --accent: #e08a4f;
+      --accent-soft: #3a2a1c;
+
+      --good: #6fbf8c;
+      --good-soft: #1e3326;
+      --warn: #dcb559;
+      --warn-soft: #3a3120;
+      --bad: #e2776b;
+      --bad-soft: #3a231f;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 28px 96px; }
+
+  header.doc-head {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    font-family: var(--mono);
+  }
+  .doc-meta strong { color: var(--ink); font-weight: 600; }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 56px 0 6px;
+    letter-spacing: -0.005em;
+  }
+  h2 .num { color: var(--ink-dim); font-family: var(--mono); font-size: 15px; margin-right: 10px; font-weight: 500; }
+  .section-note {
+    color: var(--ink-dim);
+    font-size: 14px;
+    max-width: 68ch;
+    margin: 0 0 22px;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 34px 0 12px;
+  }
+
+  p { max-width: 68ch; }
+  code {
+    font-family: var(--mono);
+    background: var(--line-soft);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+
+  .table-scroll { overflow-x: auto; margin: 4px 0 28px; border: 1px solid var(--line); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; background: var(--bg-raised); font-size: 13.8px; }
+  thead th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 600;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  tbody tr.near-miss td { opacity: 0.72; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--line-soft);
+    color: var(--ink-dim);
+    margin: 0 5px 5px 0;
+    white-space: nowrap;
+  }
+  .badge.kpi { background: var(--accent-soft); color: var(--accent); }
+  .badge.trend { background: var(--warn-soft); color: var(--warn); }
+  .badge.sourcing-yes { background: var(--good-soft); color: var(--good); }
+  .badge.sourcing-no { background: var(--bad-soft); color: var(--bad); }
+  .badge.sourcing-unknown { background: var(--line-soft); color: var(--ink-dim); }
+
+  .status { font-family: var(--mono); font-size: 12px; font-weight: 600; }
+  .status.ok { color: var(--good); }
+  .status.error { color: var(--bad); }
+
+  .score-bar-wrap { background: var(--line-soft); border-radius: 4px; width: 90px; height: 8px; display: inline-block; overflow: hidden; vertical-align: middle; margin-right: 6px; }
+  .score-bar { background: var(--good); height: 100%; }
+  tr.near-miss .score-bar { background: var(--ink-dim); }
+
+  .trend-terms span {
+    display: inline-block;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    padding: 4px 12px;
+    border-radius: 14px;
+    margin: 0 8px 8px 0;
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+
+  .callout {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    max-width: none;
+  }
+  .callout strong { color: var(--accent); }
+  .callout.bad { background: var(--bad-soft); }
+  .callout.bad strong { color: var(--bad); }
+  .callout.good { background: var(--good-soft); }
+  .callout.good strong { color: var(--good); }
+  .callout.warn { background: var(--warn-soft); }
+  .callout.warn strong { color: var(--warn); }
+  .callout p { margin: 6px 0 0; max-width: none; }
+  .callout p:first-child { margin-top: 0; }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-dim);
+    font-size: 12.5px;
+    font-family: var(--mono);
+  }
+  footer p { max-width: none; }
+
+  @media (max-width: 720px) {
+    h1 { font-size: 27px; }
+    .doc-meta { gap: 10px 20px; }
   }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<h1>Top India Dropshipping Products</h1>
-<p class="subtitle">Generated 2026-07-25 - Amazon.in bestsellers (utility archetype) + Amazon.in search (novelty/gift/decor archetype) x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products are filtered out first (keyword blocklist + an LLM brand check), then every survivor is scored against the standard 13-KPI dropship rubric.</p>
-
-
-
-
-
-<h2>Top 1 picks passing the 7/13 KPI bar</h2>
-<p class="muted">Every candidate is scored against the 13-point rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) - ranked by KPI count first, then by bestseller rank/Google Trends momentum. The Alibaba/AliExpress columns are a supplier-availability gut-check on top of that - a signal to investigate, not an auto-buy decision.</p>
+  <header class="doc-head">
+    <p class="eyebrow">India Dropship Tracker — Daily Report</p>
+    <h1>
+      
+        Nothing cleared the 7/13 bar today
+      
+    </h1>
+    <div class="doc-meta">
+      <span><strong>Generated:</strong> 2026-07-25</span>
+      <span><strong>Passed:</strong> 0</span>
+      <span><strong>Near-miss backfill:</strong> 10</span>
+      <span><strong>Candidates judged:</strong> 20</span>
+      <span><strong>Excluded as brand:</strong> 0</span>
+    </div>
+  </header>
 
   
-<table>
-  <tr><th>#</th><th>Product</th><th>KPIs matched</th><th>Momentum score</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr>
   
-  <tr class="">
-    <td>1</td>
-    <td>Ghar Soaps Sandalwood & Saffron Magic Bar For Bath (300 Gms Pack Of 3) | Paraben Free | Chandan & Kesar Bath Soap | Handmade</td>
-    <td>
-      <strong>9/13</strong>
-      <br>
-      <span class="badge trend">Small in size</span><span class="badge trend">Easy to ship</span><span class="badge trend">High margin</span><span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves confidence</span><span class="badge trend">Solves a real problem / fills a gap</span><span class="badge trend">Improves quality of life</span><span class="badge trend">High perceived value</span><span class="badge trend">Woman-dominated audience</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 100.0%;"></div></div>
-      1.0
-    </td>
-    <td><span class="badge">Amazon.in - Beauty</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown" title="403 Client Error: Forbidden for url: https://www.alibaba.com/trade/search?SearchText=Ghar+Soaps+Sandalwood+&+Saffron+Magic">blocked/unknown</span></td>
-    <td><span class="badge sourcing-unknown" title="403 Client Error: Forbidden for url: https://www.aliexpress.com/wholesale?SearchText=Ghar+Soaps+Sandalwood+&+Saffron+Magic">blocked/unknown</span></td>
-  </tr>
+  <div class="callout bad">
+    <strong>No products passed the rubric today.</strong> The near-miss table below shows the best of what was judged, but none of it is a real recommendation — it's backfill so the report still has something to review. Check the source health tables further down for outages that may have starved the candidate pool.
+  </div>
   
-</table>
 
+  
 
+  
 
+  <h2><span class="num">01</span>Today's picks</h2>
+  <p class="section-note">Every candidate is scored against the 13-point dropship rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) — ranked by KPI count first, then bestseller rank/Google Trends momentum. Alibaba/AliExpress columns are a supplier-availability gut-check, not an auto-buy signal.</p>
 
-<h2>Near misses - did NOT pass the 7/13 bar</h2>
-<p class="muted">Only 1 product(s) cleared the rubric today, so these 9 are backfilled from the same judged pool to round the list out to 10 - they scored below 7/13 and did <strong>not</strong> pass. Treat this section as "worth a second look," not a recommendation.</p>
+  
 
-<table>
-  <tr><th>#</th><th>Product</th><th>KPIs matched</th><th>Momentum score</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr>
   
-  <tr class="near-miss">
-    <td>1</td>
-    <td>Foodie Puppies Natural Bentonite Cat Litter Sand - 5kg with Lavender Fragrance for Cats and Kittens | Clean Low-dust Strong D</td>
-    <td>
-      <strong>5/13</strong>
-      <br>
-      <span class="badge trend">Improves convenience</span><span class="badge trend">Saves people time</span><span class="badge trend">Solves a real problem / fills a gap</span><span class="badge trend">Improves quality of life</span><span class="badge trend">Woman-dominated audience</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 100.0%;"></div></div>
-      0.12
-    </td>
-    <td><span class="badge">Amazon.in - Pet Supplies</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
+    <h3>Near misses — did NOT pass the 7/13 bar</h3>
+    <p class="section-note">Backfilled from the same judged pool so the report still shows 10 rows even though only 0 genuinely cleared the rubric. Worth a second look, not a recommendation.</p>
+    
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>#</th><th>Product</th><th>KPIs</th><th class="num">Momentum</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr></thead>
+    <tbody>
+    
+    <tr class="near-miss">
+      <td>1</td>
+      <td>Ghar Soaps Sandalwood & Saffron Magic Bar For Bath (300 Gms Pack Of 3) | Paraben Free | Chandan & Kesar Bath Soap | Handmade</td>
+      <td>
+        <span class="badge kpi">5/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Improves confidence</span><span class="badge">Improves convenience</span><span class="badge">Saves people money</span><span class="badge">Extremely unique</span><span class="badge">Woman-dominated audience</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>1.0
+      </td>
+      <td><span class="badge">Amazon.in - Beauty</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>2</td>
+      <td>YG300 400LM Portable Mini Home Theater LED Projector with Remote Controller, Support HDMI, AV, SD, USB Interfaces (Yellow) HD 1.8</td>
+      <td>
+        <span class="badge kpi">5/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Small in size</span><span class="badge">Easy to ship</span><span class="badge">High margin</span><span class="badge">Proof of concept from past winners</span><span class="badge">Improves convenience</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>1.0
+      </td>
+      <td><span class="badge">Amazon Search - "mini handheld projector"</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>3</td>
+      <td>LifeKrafts Polyester Magnetic Mosquito Net for All Door Types & Sizes, Auto-Closing Insect Screen/Curtain to Keep Mosquito &</td>
+      <td>
+        <span class="badge kpi">4/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Proof of concept from past winners</span><span class="badge">Improves convenience</span><span class="badge">Saves people time</span><span class="badge">Solves a real problem / fills a gap</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>1.0
+      </td>
+      <td><span class="badge">Amazon.in - Garden & Outdoors</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>4</td>
+      <td>Happi Planet Magic Eraser | Pack of 4 | No Scratch Multi-Surface Cleaning Sponge | Removes 100+ Tough Stains | Just Add Water</td>
+      <td>
+        <span class="badge kpi">3/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Saves people money</span><span class="badge">Extremely unique</span><span class="badge">Woman-dominated audience</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>1.0
+      </td>
+      <td><span class="badge">Amazon.in - Home Improvement</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>5</td>
+      <td>SOFTSPUN Microfiber Cloth - 4 pcs - 40x40 cms - 340 GSM Grey! Thick Lint & Streak-Free Multipurpose Cloths - Automotive Micro</td>
+      <td>
+        <span class="badge kpi">3/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Proof of concept from past winners</span><span class="badge">Improves convenience</span><span class="badge">Saves people money</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>1.0
+      </td>
+      <td><span class="badge">Amazon.in - Car & Motorbike</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>6</td>
+      <td>Simple Kind To Skin Refreshing Facial Wash 150 ml | 100% Soap-Free Facewash that doesn't dry out your skin| For All Skin Type</td>
+      <td>
+        <span class="badge kpi">3/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Improves confidence</span><span class="badge">Improves convenience</span><span class="badge">Woman-dominated audience</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 50.0%; display:block;"></span></span>0.5
+      </td>
+      <td><span class="badge">Amazon.in - Beauty</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>7</td>
+      <td>Lifelong LLKS03 Foldable Kick Skating Cycle| Skate Scooter for Kids(Max User Weight: 50Kg) Kids Scooter (Pink, Blue)</td>
+      <td>
+        <span class="badge kpi">3/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Easy to ship</span><span class="badge">Proof of concept from past winners</span><span class="badge">Improves convenience</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 50.0%; display:block;"></span></span>0.5
+      </td>
+      <td><span class="badge">Amazon.in - Toys & Games</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>8</td>
+      <td>PORTABLE MISTING FAN FOR LADDO GOPAL JI | PORTABLE MISTING FAN FOR LADDO GOPAL JI</td>
+      <td>
+        <span class="badge kpi">3/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Easy to ship</span><span class="badge">Proof of concept from past winners</span><span class="badge">Improves convenience</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 12.0%; display:block;"></span></span>0.12
+      </td>
+      <td><span class="badge">Amazon Search - "portable misting fan"</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>9</td>
+      <td>Petverse Automatic Pet Feeder 4.5L for Dogs and Cats, Timed Feeding with Portion Control, Voice Recorder, LED Display, Anti Clogging System, Auto Food Dispenser</td>
+      <td>
+        <span class="badge kpi">2/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Improves convenience</span><span class="badge">Saves people time</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 50.0%; display:block;"></span></span>0.5
+      </td>
+      <td><span class="badge">Amazon Search - "pet camera treat dispenser"</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>10</td>
+      <td>Babique Dog Plush Soft Toy Cute Kids Animal Home Decor Boys/Girls/Baby (25 cm, White)</td>
+      <td>
+        <span class="badge kpi">1/13</span>
+        <span class="status error">(fallback)</span><br>
+        <span class="badge">Woman-dominated audience</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>1.0
+      </td>
+      <td><span class="badge">Amazon.in - Toys & Games</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    </tbody>
+  </table>
+  </div>
   
-  <tr class="near-miss">
-    <td>2</td>
-    <td>LifeKrafts Polyester Magnetic Mosquito Net for All Door Types & Sizes, Auto-Closing Insect Screen/Curtain to Keep Mosquito &</td>
-    <td>
-      <strong>4/13</strong>
-      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 7.850987777s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '7s'}]}})">(fallback)</span><br>
-      <span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span><span class="badge trend">Saves people time</span><span class="badge trend">Solves a real problem / fills a gap</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 833.0%;"></div></div>
-      1.0
-    </td>
-    <td><span class="badge">Amazon.in - Garden & Outdoors</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
   
-  <tr class="near-miss">
-    <td>3</td>
-    <td>Classic Mosquito Net for King Size Bed | 30 GSM Polyester Fine Mesh | Foldable Pop Up Machardani for Double Bed | 360° Mosqui</td>
-    <td>
-      <strong>4/13</strong>
-      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 43.895564661s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '43s'}]}})">(fallback)</span><br>
-      <span class="badge trend">Easy to ship</span><span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span><span class="badge trend">Solves a real problem / fills a gap</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 416.0%;"></div></div>
-      0.5
-    </td>
-    <td><span class="badge">Amazon.in - Garden & Outdoors</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
-  
-  <tr class="near-miss">
-    <td>4</td>
-    <td>Happi Planet Magic Eraser | Pack of 4 | No Scratch Multi-Surface Cleaning Sponge | Removes 100+ Tough Stains | Just Add Water</td>
-    <td>
-      <strong>3/13</strong>
-      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 21.470576238s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '21s'}]}})">(fallback)</span><br>
-      <span class="badge trend">Saves people money</span><span class="badge trend">Extremely unique</span><span class="badge trend">Woman-dominated audience</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 833.0%;"></div></div>
-      1.0
-    </td>
-    <td><span class="badge">Amazon.in - Home Improvement</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
-  
-  <tr class="near-miss">
-    <td>5</td>
-    <td>SOFTSPUN Microfiber Cloth - 4 pcs - 40x40 cms - 340 GSM Grey! Thick Lint & Streak-Free Multipurpose Cloths - Automotive Micro</td>
-    <td>
-      <strong>3/13</strong>
-      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 9.782817561s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '9s'}]}})">(fallback)</span><br>
-      <span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span><span class="badge trend">Saves people money</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 833.0%;"></div></div>
-      1.0
-    </td>
-    <td><span class="badge">Amazon.in - Car & Motorbike</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
-  
-  <tr class="near-miss">
-    <td>6</td>
-    <td>Simple Kind To Skin Refreshing Facial Wash 150 ml | 100% Soap-Free Facewash that doesn't dry out your skin| For All Skin Type</td>
-    <td>
-      <strong>3/13</strong>
-      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 51.383521854s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '51s'}]}})">(fallback)</span><br>
-      <span class="badge trend">Improves confidence</span><span class="badge trend">Improves convenience</span><span class="badge trend">Woman-dominated audience</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 416.0%;"></div></div>
-      0.5
-    </td>
-    <td><span class="badge">Amazon.in - Beauty</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
-  
-  <tr class="near-miss">
-    <td>7</td>
-    <td>Lifelong LLKS03 Foldable Kick Skating Cycle| Skate Scooter for Kids(Max User Weight: 50Kg) Kids Scooter (Pink, Blue)</td>
-    <td>
-      <strong>3/13</strong>
-      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 49.541355167s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '49s'}]}})">(fallback)</span><br>
-      <span class="badge trend">Easy to ship</span><span class="badge trend">Proof of concept from past winners</span><span class="badge trend">Improves convenience</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 416.0%;"></div></div>
-      0.5
-    </td>
-    <td><span class="badge">Amazon.in - Toys & Games</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
-  
-  <tr class="near-miss">
-    <td>8</td>
-    <td>Ghar Soaps De-Tan Face Wash | For Tan Reducing, Brightening & Glowing Skin | With Sandalwood, Saffron, Coconut Oil & Goat mil</td>
-    <td>
-      <strong>2/13</strong>
-      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 34.725559144s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '34s'}]}})">(fallback)</span><br>
-      <span class="badge trend">Improves confidence</span><span class="badge trend">Woman-dominated audience</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 275.0%;"></div></div>
-      0.33
-    </td>
-    <td><span class="badge">Amazon.in - Beauty</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
-  
-  <tr class="near-miss">
-    <td>9</td>
-    <td>Babique Dog Plush Soft Toy Cute Kids Animal Home Decor Boys/Girls/Baby (25 cm, White)</td>
-    <td>
-      <strong>1/13</strong>
-      <span class="error" title="keyword-fallback (Gemini call failed after 2 attempts: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 13.513811129s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '13s'}]}})">(fallback)</span><br>
-      <span class="badge trend">Woman-dominated audience</span>
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: 833.0%;"></div></div>
-      1.0
-    </td>
-    <td><span class="badge">Amazon.in - Toys & Games</span></td>
-    <td>-</td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-    <td><span class="badge sourcing-unknown">not checked</span></td>
-  </tr>
-  
-</table>
 
+  <h2><span class="num">02</span>Google Trends — India, today</h2>
+  <p class="section-note">General public-interest search trends (news, cricket, celebrities), not shopping-specific — used only as a small momentum bonus when a product title happens to overlap with one of these terms.</p>
+  <div class="trend-terms">
+    <span>canada</span><span>மின் தடை</span><span>jana nayagan movies</span><span>málaga vs leicester city</span><span>aruna irani</span><span>వెండి</span><span>abubakar vagaev</span><span>pralhad joshi rss</span><span>கவுதம் கம்பீர்</span><span>ক্রিকেটার</span>
+  </div>
 
+  <h2><span class="num">03</span>Source health</h2>
+  <p class="section-note">Raw per-source scrape results behind today's picks. "utility" = Amazon bestseller category pages; "novelty/gift/decor" = Amazon keyword search, which has genuine (intermittent) Akamai anti-bot protection, so an occasional failed keyword here is expected, not a regression.</p>
 
-<h2>Google Trends - India (today)</h2>
-<div class="trend-terms">
-  <span>వెండి</span><span>saygid izagakhmaev</span><span>aruna irani</span><span>கவுதம் கம்பீர்</span><span>ক্রিকেটার</span><span>தனுஷ்</span><span>valter walker</span><span>नेपाल</span><span>vikrant massey</span><span>गौतम गंभीर</span>
+  <h3>Amazon.in bestsellers — utility archetype</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Category</th><th>Status</th><th class="num">Products</th></tr></thead>
+    <tbody>
+    
+      <tr>
+        <td>Kitchen & Home</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">13</td>
+      </tr>
+    
+      <tr>
+        <td>Home Improvement</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">14</td>
+      </tr>
+    
+      <tr>
+        <td>Beauty</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">14</td>
+      </tr>
+    
+      <tr>
+        <td>Toys & Games</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">14</td>
+      </tr>
+    
+      <tr>
+        <td>Sports & Fitness</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">16</td>
+      </tr>
+    
+      <tr>
+        <td>Pet Supplies</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">3</td>
+      </tr>
+    
+      <tr>
+        <td>Car & Motorbike</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">18</td>
+      </tr>
+    
+      <tr>
+        <td>Garden & Outdoors</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">15</td>
+      </tr>
+    
+      <tr>
+        <td>Luggage & Bags</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">19</td>
+      </tr>
+    
+    </tbody>
+  </table>
+  </div>
+
+  
+  <h3>Amazon.in search — novelty/gift/decor archetype</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Keyword</th><th>Status</th><th class="num">Products</th></tr></thead>
+    <tbody>
+    
+      <tr>
+        <td>"galaxy projector"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">0</td>
+      </tr>
+    
+      <tr>
+        <td>"sunset lamp"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">7</td>
+      </tr>
+    
+      <tr>
+        <td>"led fairy lights"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">18</td>
+      </tr>
+    
+      <tr>
+        <td>"designer diya lights"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">20</td>
+      </tr>
+    
+      <tr>
+        <td>"oxidised jewellery earrings"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">10</td>
+      </tr>
+    
+      <tr>
+        <td>"portable misting fan"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">3</td>
+      </tr>
+    
+      <tr>
+        <td>"mini handheld projector"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">13</td>
+      </tr>
+    
+      <tr>
+        <td>"pet camera treat dispenser"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">18</td>
+      </tr>
+    
+    </tbody>
+  </table>
+  </div>
+  
+
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  <footer>
+    <p><strong>Methodology &amp; caveats:</strong> Amazon bestseller pages cover the "utility, solves one annoyance" archetype; Amazon's regular keyword search (a fixed watchlist of known-viral terms) covers "novelty/gift/room-decor" instead, since Amazon.in has no bestseller page for those subcategories. Neither has an official trending-products API, so either can break silently if Amazon changes its layout. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs — their tables above simply won't appear while disabled. "Picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by the 13-KPI rubric judged per-candidate by Gemini, capped at 20 requests/day (free tier) — which is why the candidate pool and category/keyword lists are sized to fit that ceiling rather than maximize scrape volume. The Alibaba/AliExpress columns only confirm a matching listing exists and shares words with the query — not price, MOQ, or seller reliability, so vet a supplier manually before committing.</p>
+  </footer>
+
 </div>
-
-<h2>Amazon.in bestsellers by category</h2>
-
-  <h3>Kitchen & Home
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>3</td><td>Fresh Assorted Roses (Button Roses), 100g</td></tr>
-    
-    <tr><td>4</td><td>Fresh Chrysanthemum/Shevanti Flower Yellow, 100 g</td></tr>
-    
-    <tr><td>6</td><td>ATOM ALISTON K1 Series Digital Kitchen Weighing Scale 10 kg, Electronic Weight Machine with LCD Display for Baking, Cooking,</td></tr>
-    
-    <tr><td>7</td><td>JIALTO Plastic 10 Pcs Self Adhesive Wall Hooks - Heavy Duty Transparent Hook for Photo Frames, Wall Clocks, Keys - No Damage,</td></tr>
-    
-    <tr><td>8</td><td>Ezee Live Life Ezee Way Black Garbage Bags for Dustbin|90 Pcs|Medium 19 X 21 Inches|30 Pcs X Pack of 3, 3 count</td></tr>
-    
-    <tr><td>10</td><td>Trance Waterproof Mattress Protector Double Bed King Size 78x72 Inches Grey</td></tr>
-    
-    <tr><td>11</td><td>NutriPro Juicer Mixer Grinder - Smoothie Maker - 500 Watts (2 Jars & 1 Blade, Silver) - 2 Year Warranty</td></tr>
-    
-    <tr><td>12</td><td>LiMETRO STEEL Stainless Steel Foldable Cloth Dryer Stand Double Rack Cloth Stands for Drying Clothes Steel (Cross), 120x54x4</td></tr>
-    
-    <tr><td>13</td><td>Wakefit 100% Waterproof Premium Cotton Mattress Protector | Breathable and Hypoallergenic Ultra Soft Fitted Bed Protector 78"</td></tr>
-    
-    <tr><td>15</td><td>WARMEO MICROMATE Microwave-Safe Stainless Steel Lunch Box, Bpa Free, Perfect for Office, School, Travelling, Combo(800ml+150</td></tr>
-    
-    <tr><td>18</td><td>DALUCI Self Adhesive Wall Hooks - 20 Pcs Heavy Duty Wall Hooks for Hanging | Nail Free Sticky Hooks for Wall Heavy Items With</td></tr>
-    
-    <tr><td>19</td><td>Homestrap Set of 6 Non-Woven Printed Saree Cover/Cloth Storage/Wardrobe Organizer For Clothes with Transparent Window (Grey)(</td></tr>
-    
-    <tr><td>20</td><td>Zulaxy Photo Frame Hooks for Wall Without Drilling, 10 Pack Self Adhesive Hooks for Wall Heavy Duty Strong Nail Free for Hang</td></tr>
-    
-  </table>
-  
-
-  <h3>Home Improvement
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>1</td><td>Happi Planet Magic Eraser | Pack of 4 | No Scratch Multi-Surface Cleaning Sponge | Removes 100+ Tough Stains | Just Add Water</td></tr>
-    
-    <tr><td>2</td><td>ShineXPro Microfiber Cleaning Cloth Roll, 20Pcs, 4000 Times Washable - 10X Cheaper Than Paper Kitchen Towel Roll - Ultra Abso</td></tr>
-    
-    <tr><td>3</td><td>WaterScience CLEO Hard Water Softener for Tap and Shower | Hard Water Filter for Tap | shower filter for bathroom | with Set</td></tr>
-    
-    <tr><td>4</td><td>Zulaxy Photo Frame Hooks for Wall Without Drilling, 10 Pack Self Adhesive Hooks for Wall Heavy Duty Strong Nail Free for Hang</td></tr>
-    
-    <tr><td>5</td><td>Kleenest Magic Eraser Cleaning Sponge (Pack of 4) | Chemical-Free Multi-Purpose Wall & Wall Stain Remover | for Kitchen, Bath</td></tr>
-    
-    <tr><td>6</td><td>DALUCI Set of 2 Metal Bathroom Corner Shelf Rack | No Drilling Self Adhesive Wall Mounted Storage Organizer for Bathroom & Ki</td></tr>
-    
-    <tr><td>7</td><td>Robustt Heavy Duty Rubber Hand gloves - 1 Pair (Free Size, Multicolor) for Dishwashing, gardening, kitchen cleaning</td></tr>
-    
-    <tr><td>9</td><td>URBANMONK 39 Inch Silicon Door Bottom Sealing Strip | Self Adhesive Gap Filler Rubber | Guard Protector From Cockroach, Insec</td></tr>
-    
-    <tr><td>12</td><td>Scotch-Brite Scrub Sponge - Pack of 6 | Kitchen Scrubber with Sponge for Everyday Utensil Cleaning</td></tr>
-    
-    <tr><td>13</td><td>GM 3060 Extension Board 10Amp Output 250 Volts with 2 Mtr Extension Cord & Surge Protector | Master Switch, Safety Shutter, 4</td></tr>
-    
-    <tr><td>15</td><td>Hallstatt 2026 Upgraded Long Handle Microfiber Feather Fan Ceiling Duster for Dust Cleaning with extendable Pole 100 Inch wit</td></tr>
-    
-    <tr><td>17</td><td>Duracell LED Torch Light, Super Bright, 12000 LUX, Ultra-Light and Easy to Carry Design, Large Reflector, for Everyday Use, 3</td></tr>
-    
-    <tr><td>19</td><td>Scotch-Brite Heavy Duty Scrub Dots for Powerful Scrubbing, Suitable for Iron Cast, Stainless Steel & Non-Coated Cookware, Rin</td></tr>
-    
-    <tr><td>20</td><td>SOFTSPUN Microfiber Cleaning Cloths, 12pcs 30x30cms 220 GSM Multi-Colour! Highly Absorbent Lint and Streak Free Multi -Purpos</td></tr>
-    
-  </table>
-  
-
-  <h3>Beauty
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>1</td><td>Ghar Soaps Sandalwood & Saffron Magic Bar For Bath (300 Gms Pack Of 3) | Paraben Free | Chandan & Kesar Bath Soap | Handmade</td></tr>
-    
-    <tr><td>2</td><td>Simple Kind To Skin Refreshing Facial Wash 150 ml | 100% Soap-Free Facewash that doesn't dry out your skin| For All Skin Type</td></tr>
-    
-    <tr><td>3</td><td>Ghar Soaps De-Tan Face Wash | For Tan Reducing, Brightening & Glowing Skin | With Sandalwood, Saffron, Coconut Oil & Goat mil</td></tr>
-    
-    <tr><td>6</td><td>Scalpe Pro Daily Anti-Dandruff Shampoo | Removes Dandruff from Source | Prevents Itching & Irritation | Scalpe Science | Clim</td></tr>
-    
-    <tr><td>9</td><td>L'Oreal Paris Extraordinary Oil Hair Serum Powered by Floral Oils for All Hair Types, Volume- 100 ml, Makes hair frizz-free,</td></tr>
-    
-    <tr><td>10</td><td>Minimalist Anti-Acne Salicylic Acid 2% Face Wash For Oily & Acne Prone Skin | With LHA for Pore Cleansing, Oil Control & Sebu</td></tr>
-    
-    <tr><td>11</td><td>L'Oreal Paris Fresh Hyaluron Moisture 72HR Moisture Sealing Conditioner Powered By Hyaluronic Acid, For Frizz-Free, Hydrated</td></tr>
-    
-    <tr><td>12</td><td>Muuchstac Ocean Face Wash for Men (2 x 100ml) – Anti-Acne/Pimple, Oil Control & Skin Brightening Cleanser – with Niacinamide,</td></tr>
-    
-    <tr><td>13</td><td>WishCare Hair Growth Serum For Scalp | 94% Saw New Hair Growth | Redensyl & Rosemary Oil | 100% Saw Hairfall Reduction | In-V</td></tr>
-    
-    <tr><td>14</td><td>L'Oréal Paris Permanent Hair Colour, Radiant At-Home Hair Colour with up to 100% Grey Coverage, Pro-Keratin, Up to 8 Weeks of</td></tr>
-    
-    <tr><td>17</td><td>RE' EQUIL Ultra Matte Dry Touch Sunscreen | SPF 50 PA++++ | Water & Sweat Resistant | No White Cast, Non-Greasy & Non-Comedog</td></tr>
-    
-    <tr><td>18</td><td>Dettol Liquid Handwash Refill – Skincare Hand Wash- 1350ml | pH Balanced | 10x Better Germ Protection</td></tr>
-    
-    <tr><td>19</td><td>MARS Edge of Desire Lip Liner | One Swipe Smooth Application | Long Lasting Lip Pencil (1.4gm) (14-CHOCO BUTTER)</td></tr>
-    
-    <tr><td>20</td><td>WishCare Multi Peptide Anti Hairfall Shampoo - Rice Water, Rosemary, Capilia Longa, HA & Caffeine 20ml</td></tr>
-    
-  </table>
-  
-
-  <h3>Toys & Games
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>1</td><td>Babique Dog Plush Soft Toy Cute Kids Animal Home Decor Boys/Girls/Baby (25 cm, White)</td></tr>
-    
-    <tr><td>2</td><td>Lifelong LLKS03 Foldable Kick Skating Cycle| Skate Scooter for Kids(Max User Weight: 50Kg) Kids Scooter (Pink, Blue)</td></tr>
-    
-    <tr><td>3</td><td>Wembley Educational Kids Laptop Learning Toy for 2-5 Years Boys Girls Computer Toys for 3 Years Fun Activity Learning Alphabe</td></tr>
-    
-    <tr><td>4</td><td>Gooyo GY-2029 Voice Control Banana Dancing Monkey Toy | Spinning, Rolling and Tumbling Toy for Kids with Bright LED Lights &</td></tr>
-    
-    <tr><td>7</td><td>TEC TAVAKKAL Duck Slide Toy Set, Funny Automatic Stair-Climbing Ducklings Cartoon Race Track Set Duck Roller Coaster Escalato</td></tr>
-    
-    <tr><td>8</td><td>Smartivity My First Science Experiment Kit for Kids 6-14 Years | 50+ Amazing Science Experiments | Educational STEM Toy | Bir</td></tr>
-    
-    <tr><td>9</td><td>Storio Toy Octopus Plushie Reversible Soft Toys for Kids | Plush Soft Toys for Baby Boys and Girls| Best Gift | Octopus Soft</td></tr>
-    
-    <tr><td>10</td><td>LuvLap Sunny Ride on & Car for Kids with Music & Horn Steering, Push Car for Baby with Backrest, Safety Guard, Under Seat Sto</td></tr>
-    
-    <tr><td>13</td><td>HUG 'n' FEEL SOFT TOYS Unicorn, Soft Toy, Baby Toys, Kids Toy, Soft Toy, Toy for Girl, Birthday Gift for Girl Boys, Toy for G</td></tr>
-    
-    <tr><td>14</td><td>Lifelong Trike Cycle for 2-5 Years - Tricycles for Boy & Girl - Baby Cycle for Kids with 3 EVA Wheels, Bell & Basket -Durable</td></tr>
-    
-    <tr><td>15</td><td>Novo Baby Smart Activity Fun&Learning Blocks Geometrics, Educational & Learning Sorter Toys, Color Choose Stacking Game for K</td></tr>
-    
-    <tr><td>16</td><td>Firstcry Intellibaby 6-Book Set – Soft Sensory Cloth Books for Babies, Crinkle Sound & Washable, Early Learning Themes Animal</td></tr>
-    
-    <tr><td>18</td><td>Storio Intelligence Book Sound Book for Children, English Letters & Words Learning Book, Fun Educational Toys. Activities wit</td></tr>
-    
-    <tr><td>20</td><td>Storio Baby Products Toys 7 Pcs Rattle Set with Teathers for New Born Baby Gifts, Toy for Babies, Non-Toxic</td></tr>
-    
-  </table>
-  
-
-  <h3>Sports & Fitness
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>1</td><td>Slovic Pull up Bar for Home for Kids & Adults [100 KG] | Pull up Bar Wall Mounted with Anti-Skid Grip | No-Drill Installation</td></tr>
-    
-    <tr><td>2</td><td>Lifelong PVC Hex Fixed Dumbbells Pack of 2 (2kg*2) Black Color for Home Gym Equipment Fitness Barbell|Gym Exercise|Home Worko</td></tr>
-    
-    <tr><td>3</td><td>Boldfit Pull up Bar for Home for Kids & Adults [100 KG] - Gym Equipment for Home Workout | Adjustable Door Way Chin Up Bar fo</td></tr>
-    
-    <tr><td>4</td><td>Lifelong Pull Up Bar for Home Kids| Adjustable 62–100 cm Doorway PullUp Bar For Home Gym Equipment |No Screw Pull Up Bar Door</td></tr>
-    
-    <tr><td>5</td><td>Boldfit Hand Gripper for Men & Women Hand Grip Strengthener for Forearm, Wrist & Finger Workout Fitness Equipment for Home &</td></tr>
-    
-    <tr><td>6</td><td>Boldfit Yoga Mats For Women and Men Exercise For Home Workout Gym Anti Slip EVA Material Yoga Mat 4Mm For Kids Gym Mats - Gre</td></tr>
-    
-    <tr><td>8</td><td>Boldfit Heavy Resistance Band for Workout Set Exercise & Stretching Pull Up Bands for Home Exercise for Gym Men & Women Loop</td></tr>
-    
-    <tr><td>9</td><td>Yonex Mavis 350 Green Cap Nylon Shuttlecock (Yellow)</td></tr>
-    
-    <tr><td>10</td><td>Lifelong LLYM92 Yoga mat for Women & Men EVA Material 4mm Anti-Slip Mat for Workout|Exercise Mat For Home Gym | Yoga Mat-For</td></tr>
-    
-    <tr><td>12</td><td>De Jure Fitness Adjustable Ankle & Wrist Weights Pair (1KG x 2) for Men & Women | Strength Training, Walking, Running, Workou</td></tr>
-    
-    <tr><td>13</td><td>Fashnex Resistance Bands Set for Exercise, Stretching and Workout Toning Tube Kit with Foam Handles, Door Anchor, Ankle Strap</td></tr>
-    
-    <tr><td>14</td><td>Boldfit Gym Gloves for Men with Wrist Support Accessories, Gym Mittens for Women for Weightlifting, for Gym Workout for Train</td></tr>
-    
-    <tr><td>16</td><td>Protoner PVC 3 in 1 convertible DM 4-40 Kg Dumbbells Set and Fitness Kit for Men and Women Whole Body Workout (20 kg (2 kg x</td></tr>
-    
-    <tr><td>17</td><td>FitBox Sports 4kg Exlusive Octa PVC Fixed Dumbbells (2kg x 2) Black</td></tr>
-    
-    <tr><td>19</td><td>Boldfit Adjustable Hand Grip Strengthener, Hand Gripper With Counter for Men & Women for Gym Workout Hand Exercise Equipment</td></tr>
-    
-    <tr><td>20</td><td>Boldfit Resistance Bands Mini Loop Set (Pack of 5) Hip Band / Toning Exercise Band for Gym Booty Belt / Latex Band / Thera Ba</td></tr>
-    
-  </table>
-  
-
-  <h3>Pet Supplies
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>8</td><td>Foodie Puppies Natural Bentonite Cat Litter Sand - 5kg with Lavender Fragrance for Cats and Kittens | Clean Low-dust Strong D</td></tr>
-    
-    <tr><td>15</td><td>Petoska Lavender Cat Litter 5kg | 100% Natural Bentonite Clay | Clumping Cat Litter with Fast Odour Lock, Low Dust & Gentle o</td></tr>
-    
-    <tr><td>20</td><td>Hipkoo Exclusive Cat Litter 20Kg 100% Natural Unscented Bentonite Clay Dust Free Fragrance Free Absorbent Eco-Friendly Sand f</td></tr>
-    
-  </table>
-  
-
-  <h3>Car & Motorbike
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>1</td><td>SOFTSPUN Microfiber Cloth - 4 pcs - 40x40 cms - 340 GSM Grey! Thick Lint & Streak-Free Multipurpose Cloths - Automotive Micro</td></tr>
-    
-    <tr><td>2</td><td>Motul Chain Lube & Chain Cleaner Combo for Bikes – C2 Lubrication + C1 Deep Cleaning Spray for Superior Chain Care, Suitable</td></tr>
-    
-    <tr><td>3</td><td>Godrej aer O – Hanging Car Air Freshener – Assorted Pack of 3 (22.5g) | Gel Lasts up to 30 days | Car Accessories</td></tr>
-    
-    <tr><td>4</td><td>IFTEX Clean System G for All Petrol Cars (200 ml) / e20 Petrol Fuel Treatment and Injector Cleaner for Cleaning deposits and</td></tr>
-    
-    <tr><td>7</td><td>Godrej aer O Hanging Car Air Freshener Gel | Car Accessories | Cool Aqua (7.5G)</td></tr>
-    
-    <tr><td>8</td><td>Involve Your Senses One Musk Organic Car Perfume, Involve Your Senses Strong Fiber Air Freshener to Freshen'up Your Car - ION</td></tr>
-    
-    <tr><td>9</td><td>SOFTSPUN Microfiber Cloth for Car 1400 GSM 40x60 cms 1 Pc Aqua Blue/Grey | Twisted Loop Super Absorbent Towel - Edgeless Desi</td></tr>
-    
-    <tr><td>10</td><td>Boldfit face mask for Bikers Full face mask for Bikers Helmet Head Cover Balaclava for Men Bike Riding & Biker Head Cover for</td></tr>
-    
-    <tr><td>11</td><td>ShineXPro Car Duster - Lint-Free & Scratch-Free Car Cleaner Brush with Long Handle - Car Dust Cleaner features Paraffin Wax C</td></tr>
-    
-    <tr><td>12</td><td>WD-40 Multipurpose Spray, Rust Remover, Cleans Bike Chains, Hinge Lubricant, Loosens Jammed Parts, Degreaser, and Cleaning Ag</td></tr>
-    
-    <tr><td>13</td><td>3M IA260166391 Auto Specialty Shampoo (500 ml)</td></tr>
-    
-    <tr><td>14</td><td>FABTEC Waterproof Car Body Cover for Maruti Baleno with Mirror and Antenna Pocket, Soft Cotton Lining, Triple Stitched (Heat</td></tr>
-    
-    <tr><td>15</td><td>ShineXPro Microfiber Car Cleaning Cloth - OG Soft 500 GSM Extra Large (35x75 CM) Microfiber Cloth for Car and Bike - Suede Ed</td></tr>
-    
-    <tr><td>16</td><td>Motul C2 Motorcycle Chain Lube | Advanced Lubrication Spray for Bike Chains | Protects Against Wear & Corrosion, Improves Cha</td></tr>
-    
-    <tr><td>17</td><td>IFTEX Clean System 2/3 e20 Fuel Additive for all Petrol Bike and Scooter, Petrol Fuel System and Injector Cleaner for cleanin</td></tr>
-    
-    <tr><td>18</td><td>Vega Crux Dual Visor Flip Up Motorcycle Helmet with Lightweight Shell, Flip-Up Chin Guard, Dual Visor System, Shock Absorbing</td></tr>
-    
-    <tr><td>19</td><td>MICHELIN Premium All-Weather Wiper Blade | High-Carbon Steel Strip with Natural Rubber & Graphite Coating | Smooth, Silent &</td></tr>
-    
-    <tr><td>20</td><td>Jopasu Car Duster with Paraffin Wax-Treated Cotton Strands | Scratch-Free Dry Dust Cleaner for Cars | Lint Free Reusable Exte</td></tr>
-    
-  </table>
-  
-
-  <h3>Garden & Outdoors
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>1</td><td>LifeKrafts Polyester Magnetic Mosquito Net for All Door Types & Sizes, Auto-Closing Insect Screen/Curtain to Keep Mosquito &</td></tr>
-    
-    <tr><td>2</td><td>Classic Mosquito Net for King Size Bed | 30 GSM Polyester Fine Mesh | Foldable Pop Up Machardani for Double Bed | 360° Mosqui</td></tr>
-    
-    <tr><td>3</td><td>Shadow Securitronics Tom CAT No Entry Rat Repellent Spray for Cars Highly Effective with and Lasts 1 Year Leak Free Easy to S</td></tr>
-    
-    <tr><td>4</td><td>Rat Repellent for Car Home Pack of 1 (10 Tablet) Rodent & Mouse Repellent Peppermint Oil to Protect Wires in Car, Bike & Truc</td></tr>
-    
-    <tr><td>5</td><td>Shadow Securitronics Gecko Aerosol Based Odour Free Herbal Lizard Repellent Spray | Eco-Friendly & Biodegradable | Irritant &</td></tr>
-    
-    <tr><td>7</td><td>Konvio Neer TDS Meter for Water Testing | Digital TDS meter| PPM Tester for Drinking Water, RO, Aquarium & Hydroponics | Tota</td></tr>
-    
-    <tr><td>9</td><td>Ugaoo Organic Vermicompost for Plants 5 Kg | Pure Earthworm Compost Manure Rich in NPK & Micronutrients | Natural Plant Food</td></tr>
-    
-    <tr><td>11</td><td>Ugaoo Ready-to-Use Potting Soil for Plants 5 Kg | Organic Potting Mix with Red Soil and Cow Manure for Indoor Outdoor and Flo</td></tr>
-    
-    <tr><td>12</td><td>3M Rodent Repellent Coating, 250 g| Rat Protection for Engine Parts and Wires | Long-Lasting Effect, Liquid</td></tr>
-    
-    <tr><td>14</td><td>All Out Mosquito Kill Racquet | 2X Faster Charging* | Mosquito Bat | Racket to Kill Mosquitoes Instantly | 6 Months Warranty</td></tr>
-    
-    <tr><td>16</td><td>SaleOn Insulated Lunch Bag for Women & Men | Waterproof Soft Cooler Tote | Leakproof, Reusable with Pockets | Thermal Lunch B</td></tr>
-    
-    <tr><td>17</td><td>HIT Crawling Insect Killer Cockroach Killer Spray | Instant Kill | Deep-Reach Nozzle | Fresh Fragrance, 700ml</td></tr>
-    
-    <tr><td>18</td><td>Ugaoo Cocopeat Block 5 Kg | Expands Upto 75 litres of Light Coco Peat Growing Medium | Pre-Washed Low-EC Cocopeat for Plants</td></tr>
-    
-    <tr><td>19</td><td>Go Garden NPK 19 19 19 Fertilizer for Plants | Water Soluble Plant Fertilizer for Growth, Flowering & Fruiting | Garden & Ind</td></tr>
-    
-    <tr><td>20</td><td>Lifekrafts Standard Size Window Mosquito Net (Size-90x120cms/36x47 Inches/2.95x3.94 Feet, Color-Grey) 120 GSM Stitched Fiberg</td></tr>
-    
-  </table>
-  
-
-  <h3>Luggage & Bags
-    <span class="ok">- ok</span>
-  </h3>
-  
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    
-    <tr><td>2</td><td>Safari Pentagon Pro 8 Wheels 66cm Medium Size Trolley Bag, Hard Case Polypropylene, 360º Wheeling Check in Luggage, Suitcase</td></tr>
-    
-    <tr><td>3</td><td>TEKCOOL Umbrella, UV Big Size Umbrella for Sun Protection Rain Windproof Strong Large 3 Fold For Men Women Kids Boys Girls Pe</td></tr>
-    
-    <tr><td>4</td><td>Safari Cabin Genius Alley 55cm Trolley Bag Hard Case Polypropylene, 4 Spinner Wheels, 360 Degree Wheeling Carry on Luggage, T</td></tr>
-    
-    <tr><td>5</td><td>Kerok Portable Auto Travel Umbrella - Windproof for Rain, Strong for Wind, Auto Open/Close Button, Perfect Car Umbrella for M</td></tr>
-    
-    <tr><td>6</td><td>PESOMA Mini Umbrella with Case for Men & Women (Manual Open) Compact Travelling Pocket Umbrella, Polyester & UV Protect Fabri</td></tr>
-    
-    <tr><td>7</td><td>Boldfit Rain Cover for Backpack Travel Essentials Rain Cover for Bag Travel Accessories Bags Water Resistance Dustproof Water</td></tr>
-    
-    <tr><td>8</td><td>Boldfit Shoe Bag for Travel Bag for Man & Women Shoe Cover for Storage at Home Gym Reusable Travelling Accessories Organizer</td></tr>
-    
-    <tr><td>9</td><td>Billebon Premium Neck Pillow for Travelling Airplane Travel Pillow Comfortable Head Rest Neck Holder Pillow (Grey)</td></tr>
-    
-    <tr><td>10</td><td>FLYNGO Umbrella for Rain Big Size with Carabiner Handle, UV Coated 3-Fold Travel Umbrella for Sun Protection, Windproof Reinf</td></tr>
-    
-    <tr><td>11</td><td>Lyrovo Nylon 7Pcs Travel Packing Cubes For Clothes Laundry Toiletry Cosmetics Luggage Makeup Pouch Accessories Organizer Bag</td></tr>
-    
-    <tr><td>12</td><td>Roughhouse UV Umbrella for Sun & Rain – Auto Open/Close | Windproof | Travel-Friendly 3-Fold Design | SPF 50+ Coated | Big Ca</td></tr>
-    
-    <tr><td>13</td><td>WildHorn Genuine Leather Wallet for Men | Slim Bifold Wallet with RFID Blocking | Multiple Card Slots & Coin Pocket | Premium</td></tr>
-    
-    <tr><td>14</td><td>Storite Dust & Rain Cover For Standard Backpack, 30L-35L, Black | With Pouch, Water Resistance, Dustproof, Elastic Adjustable</td></tr>
-    
-    <tr><td>15</td><td>Lifelong Shoe Bags for Travel, Drawstring Travel Shoe Bags for Packing, Dustproof Portable Travel Shoe Storage Bag for Men an</td></tr>
-    
-    <tr><td>16</td><td>Wazdorf Nylon 41 Liter Expandable Travel Bags for Women, Duffle Bags for Women Luggage, Foldable Vanity Traveling Bag, Waterp</td></tr>
-    
-    <tr><td>17</td><td>Aristocrat Comet Cabin Polycarbonate Hard Case 8-Wheel Trolley Bag, Green | Durable Case, Lightweight, Combination Lock, Stur</td></tr>
-    
-    <tr><td>18</td><td>Boldfit Gym Bags for Men Compact Sports Duffle for Women Unisex Duffle Bag for Carry & Travel Adjustable for Shoes Towel Duff</td></tr>
-    
-    <tr><td>19</td><td>REXERA UV Travel Mini Folding Ultra Compact pastel Umbrella with Hard Case, Manual Open 6 Ribs Lightweight Premium Portable,</td></tr>
-    
-    <tr><td>20</td><td>Stealodeal Brown 28 Slots Leather Debit/Credit/ATM Men & Women Card Holder</td></tr>
-    
-  </table>
-  
-
-
-
-
-
-
-<h2>Amazon.in search - novelty/gift/decor archetype</h2>
-<p class="muted">Amazon.in has no bestseller page for decor/lighting/gift subcategories, so this searches directly for known-viral terms instead of scraping a category list. Occasional per-keyword failures are Amazon's Akamai anti-bot challenge (intermittent, not a parsing bug).</p>
-
-  <h3>"galaxy projector"
-    <span class="ok">- ok</span>
-  </h3>
-  
-
-  <h3>"sunset lamp"
-    <span class="error">- Amazon served an anti-bot (Akamai) interstitial challenge on every attempt</span>
-  </h3>
-  
-
-  <h3>"led fairy lights"
-    <span class="error">- Amazon served an anti-bot (Akamai) interstitial challenge on every attempt</span>
-  </h3>
-  
-
-  <h3>"designer diya lights"
-    <span class="error">- Amazon served an anti-bot (Akamai) interstitial challenge on every attempt</span>
-  </h3>
-  
-
-  <h3>"oxidised jewellery earrings"
-    <span class="error">- Amazon served an anti-bot (Akamai) interstitial challenge on every attempt</span>
-  </h3>
-  
-
-  <h3>"portable misting fan"
-    <span class="error">- Amazon served an anti-bot (Akamai) interstitial challenge on every attempt</span>
-  </h3>
-  
-
-  <h3>"mini handheld projector"
-    <span class="error">- Amazon served an anti-bot (Akamai) interstitial challenge on every attempt</span>
-  </h3>
-  
-
-  <h3>"pet camera treat dispenser"
-    <span class="error">- Amazon served an anti-bot (Akamai) interstitial challenge on every attempt</span>
-  </h3>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<footer>
-  <p><strong>Methodology &amp; caveats:</strong> Amazon bestseller pages cover the "utility, solves one annoyance" archetype; Amazon's regular keyword search (a fixed watchlist of known-viral terms, config.FUN_PRODUCT_KEYWORDS) covers the "novelty/gift/room-decor" archetype instead, since Amazon.in has no bestseller page for decor/lighting/gift subcategories. Neither has an official trending-products API, so either can break silently if Amazon changes its layout - check the "ok"/error status per section above before trusting a day's report; the search endpoint specifically has real (intermittent) Akamai anti-bot protection, so an occasional per-keyword failure there is expected, not a regression. Google Trends uses its public RSS feed. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (see config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs. "Top picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by a 13-KPI rubric judged per-candidate by Gemini (with a keyword-based fallback, flagged inline, if the judge call fails). The judge call count is capped daily by the Gemini free-tier quota (20 requests/day), which is why the candidate pool and category/keyword list are deliberately sized to fit that ceiling rather than maximizing scrape volume. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere and shares words with the query - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
-</footer>
-
 </body>
 </html>

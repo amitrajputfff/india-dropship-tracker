@@ -2,180 +2,401 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>India Trending Products Report - {{ report_date }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>India Dropship Tracker — {{ report_date }}</title>
 <style>
-  :root { color-scheme: light dark; }
-  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
-  h1 { font-size: 1.6rem; margin-bottom: 0.2rem; }
-  .subtitle { color: #666; margin-top: 0; }
-  h2 { border-bottom: 2px solid #ddd; padding-bottom: 0.3rem; margin-top: 2.5rem; }
-  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-  th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
-  th { background: #f4f4f4; }
-  .score-bar-wrap { background: #eee; border-radius: 4px; width: 120px; height: 10px; display: inline-block; overflow: hidden; }
-  .score-bar { background: #2e7d32; height: 100%; }
-  .near-miss .score-bar { background: #9e9e9e; }
-  .badge { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 10px; background: #e3f2fd; color: #1565c0; margin: 0 0.2rem 0.2rem 0; }
-  .badge.trend { background: #fff3e0; color: #e65100; }
-  .badge.sourcing-yes { background: #e8f5e9; color: #2e7d32; }
-  .badge.sourcing-no { background: #ffebee; color: #c62828; }
-  .badge.sourcing-unknown { background: #f0f0f0; color: #777; }
-  .error { color: #c62828; font-size: 0.9rem; }
-  .ok { color: #2e7d32; font-size: 0.9rem; }
-  .muted { color: #888; font-size: 0.85rem; }
-  .trend-terms span { display: inline-block; background: #f0f0f0; padding: 0.2rem 0.6rem; border-radius: 12px; margin: 0.15rem; font-size: 0.9rem; }
-  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.85rem; color: #777; }
+  :root {
+    --bg: #f6f4ef;
+    --bg-raised: #ffffff;
+    --ink: #1c1a17;
+    --ink-dim: #5c5750;
+    --line: #ddd8cd;
+    --line-soft: #eae6db;
+    --accent: #a8481f;
+    --accent-soft: #f1e2d7;
+
+    --good: #2c7a4a;
+    --good-soft: #e2efe4;
+    --warn: #a3760f;
+    --warn-soft: #f4ead0;
+    --bad: #b23b2e;
+    --bad-soft: #f7e3df;
+
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #17140f;
+    --bg-raised: #201c16;
+    --ink: #ece7dc;
+    --ink-dim: #a79f8f;
+    --line: #3a352b;
+    --line-soft: #2a2620;
+    --accent: #e08a4f;
+    --accent-soft: #3a2a1c;
+
+    --good: #6fbf8c;
+    --good-soft: #1e3326;
+    --warn: #dcb559;
+    --warn-soft: #3a3120;
+    --bad: #e2776b;
+    --bad-soft: #3a231f;
+  }
+
   @media (prefers-color-scheme: dark) {
-    body { background: #111; color: #eee; }
-    .subtitle, .muted, footer { color: #aaa; }
-    h2 { border-color: #333; }
-    th { background: #1e1e1e; }
-    th, td { border-color: #2a2a2a; }
-    .score-bar-wrap { background: #333; }
-    .near-miss .score-bar { background: #555; }
-    .badge { background: #123a5c; color: #90caf9; }
-    .badge.trend { background: #4a2c00; color: #ffcc80; }
-    .badge.sourcing-yes { background: #1b3a1e; color: #81c784; }
-    .badge.sourcing-no { background: #4a1414; color: #ef9a9a; }
-    .badge.sourcing-unknown { background: #222; color: #999; }
-    .trend-terms span { background: #222; }
+    :root:not([data-theme="light"]) {
+      --bg: #17140f;
+      --bg-raised: #201c16;
+      --ink: #ece7dc;
+      --ink-dim: #a79f8f;
+      --line: #3a352b;
+      --line-soft: #2a2620;
+      --accent: #e08a4f;
+      --accent-soft: #3a2a1c;
+
+      --good: #6fbf8c;
+      --good-soft: #1e3326;
+      --warn: #dcb559;
+      --warn-soft: #3a3120;
+      --bad: #e2776b;
+      --bad-soft: #3a231f;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 28px 96px; }
+
+  header.doc-head {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    font-family: var(--mono);
+  }
+  .doc-meta strong { color: var(--ink); font-weight: 600; }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 56px 0 6px;
+    letter-spacing: -0.005em;
+  }
+  h2 .num { color: var(--ink-dim); font-family: var(--mono); font-size: 15px; margin-right: 10px; font-weight: 500; }
+  .section-note {
+    color: var(--ink-dim);
+    font-size: 14px;
+    max-width: 68ch;
+    margin: 0 0 22px;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 34px 0 12px;
+  }
+
+  p { max-width: 68ch; }
+  code {
+    font-family: var(--mono);
+    background: var(--line-soft);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+
+  .table-scroll { overflow-x: auto; margin: 4px 0 28px; border: 1px solid var(--line); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; background: var(--bg-raised); font-size: 13.8px; }
+  thead th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 600;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  tbody tr.near-miss td { opacity: 0.72; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--line-soft);
+    color: var(--ink-dim);
+    margin: 0 5px 5px 0;
+    white-space: nowrap;
+  }
+  .badge.kpi { background: var(--accent-soft); color: var(--accent); }
+  .badge.trend { background: var(--warn-soft); color: var(--warn); }
+  .badge.sourcing-yes { background: var(--good-soft); color: var(--good); }
+  .badge.sourcing-no { background: var(--bad-soft); color: var(--bad); }
+  .badge.sourcing-unknown { background: var(--line-soft); color: var(--ink-dim); }
+
+  .status { font-family: var(--mono); font-size: 12px; font-weight: 600; }
+  .status.ok { color: var(--good); }
+  .status.error { color: var(--bad); }
+
+  .score-bar-wrap { background: var(--line-soft); border-radius: 4px; width: 90px; height: 8px; display: inline-block; overflow: hidden; vertical-align: middle; margin-right: 6px; }
+  .score-bar { background: var(--good); height: 100%; }
+  tr.near-miss .score-bar { background: var(--ink-dim); }
+
+  .trend-terms span {
+    display: inline-block;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    padding: 4px 12px;
+    border-radius: 14px;
+    margin: 0 8px 8px 0;
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+
+  .callout {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    max-width: none;
+  }
+  .callout strong { color: var(--accent); }
+  .callout.bad { background: var(--bad-soft); }
+  .callout.bad strong { color: var(--bad); }
+  .callout.good { background: var(--good-soft); }
+  .callout.good strong { color: var(--good); }
+  .callout.warn { background: var(--warn-soft); }
+  .callout.warn strong { color: var(--warn); }
+  .callout p { margin: 6px 0 0; max-width: none; }
+  .callout p:first-child { margin-top: 0; }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-dim);
+    font-size: 12.5px;
+    font-family: var(--mono);
+  }
+  footer p { max-width: none; }
+
+  @media (max-width: 720px) {
+    h1 { font-size: 27px; }
+    .doc-meta { gap: 10px 20px; }
   }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<h1>Top India Dropshipping Products</h1>
-<p class="subtitle">Generated {{ report_date }} - Amazon.in bestsellers (utility archetype) + Amazon.in search (novelty/gift/decor archetype) x Google Trends India, cross-checked for sourcing against Alibaba &amp; AliExpress. Mainstream branded products are filtered out first (keyword blocklist + an LLM brand check), then every survivor is scored against the standard 13-KPI dropship rubric.</p>
+  <header class="doc-head">
+    <p class="eyebrow">India Dropship Tracker — Daily Report</p>
+    <h1>
+      {% if top_picks.passed %}
+        {{ top_picks.passed|length }} product{{ 's' if top_picks.passed|length != 1 }} cleared today's {{ min_kpis }}/13 dropship bar
+      {% else %}
+        Nothing cleared the {{ min_kpis }}/13 bar today
+      {% endif %}
+    </h1>
+    <div class="doc-meta">
+      <span><strong>Generated:</strong> {{ report_date }}</span>
+      <span><strong>Passed:</strong> {{ top_picks.passed|length }}</span>
+      <span><strong>Near-miss backfill:</strong> {{ top_picks.near_misses|length }}</span>
+      <span><strong>Candidates judged:</strong> {{ top_picks.candidates_judged }}</span>
+      <span><strong>Excluded as brand:</strong> {{ top_picks.excluded_as_brand }}</span>
+    </div>
+  </header>
 
-{% macro sourcing_badge(check) -%}
-  {%- if check is none -%}
-    <span class="badge sourcing-unknown">not checked</span>
-  {%- elif check.available -%}
-    <span class="badge sourcing-yes" title="{{ check.sample_titles|join(' | ') }}">found</span>
-  {%- elif check.available is none -%}
-    <span class="badge sourcing-unknown" title="{{ check.error }}">blocked/unknown</span>
-  {%- else -%}
-    <span class="badge sourcing-no">not found</span>
-  {%- endif -%}
-{%- endmacro %}
+  {% set fallback_count = (top_picks.passed + top_picks.near_misses) | rejectattr('kpi.source', 'equalto', 'llm') | list | length %}
+  {% if not top_picks.passed %}
+  <div class="callout bad">
+    <strong>No products passed the rubric today.</strong> The near-miss table below shows the best of what was judged, but none of it is a real recommendation — it's backfill so the report still has something to review. Check the source health tables further down for outages that may have starved the candidate pool.
+  </div>
+  {% elif fallback_count > 0 %}
+  <div class="callout warn">
+    <strong>{{ fallback_count }} of {{ top_picks.candidates_judged }} judged candidate(s) fell back to keyword scoring</strong> instead of a live Gemini judgment — usually the free-tier daily quota (20 requests/day) ran out. Fallback-scored rows are marked <code>(fallback)</code> inline and cap out lower than a real judgment would, so treat those specific rows more skeptically than the rest.
+  </div>
+  {% else %}
+  <div class="callout good">
+    <strong>Every judged candidate today got a live Gemini judgment</strong> — no keyword-scoring fallbacks were needed.
+  </div>
+  {% endif %}
 
-{% macro picks_table(picks, base_score, row_class) %}
-<table>
-  <tr><th>#</th><th>Product</th><th>KPIs matched</th><th>Momentum score</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr>
-  {% for pick in picks %}
-  <tr class="{{ row_class }}">
-    <td>{{ loop.index }}</td>
-    <td>{{ pick.title }}</td>
-    <td>
-      <strong>{{ pick.kpi.count }}/13</strong>
-      {% if pick.kpi.source != 'llm' %}<span class="error" title="{{ pick.kpi.source }}">(fallback)</span>{% endif %}<br>
-      {% for k in pick.kpi.matched %}<span class="badge trend">{{ k }}</span>{% endfor %}
-    </td>
-    <td>
-      <div class="score-bar-wrap"><div class="score-bar" style="width: {{ (pick.score * 100 / base_score) | round(0, 'floor') }}%;"></div></div>
-      {{ pick.score }}
-    </td>
-    <td>{% for s in pick.sources %}<span class="badge">{{ s }}</span>{% endfor %}</td>
-    <td>{% if pick.trend_match %}<span class="badge trend">{{ pick.trend_match }}</span>{% else %}-{% endif %}</td>
-    <td>{{ sourcing_badge(pick.sourcing.alibaba if pick.sourcing else none) }}</td>
-    <td>{{ sourcing_badge(pick.sourcing.aliexpress if pick.sourcing else none) }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endmacro %}
+  {% macro sourcing_badge(check) -%}
+    {%- if check is none -%}
+      <span class="badge sourcing-unknown">not checked</span>
+    {%- elif check.available -%}
+      <span class="badge sourcing-yes" title="{{ check.sample_titles|join(' | ') }}">found</span>
+    {%- elif check.available is none -%}
+      <span class="badge sourcing-unknown" title="{{ check.error }}">blocked/unknown</span>
+    {%- else -%}
+      <span class="badge sourcing-no">not found</span>
+    {%- endif -%}
+  {%- endmacro %}
 
-<h2>Top {{ top_picks.passed|length }} picks passing the {{ min_kpis }}/13 KPI bar</h2>
-<p class="muted">Every candidate is scored against the 13-point rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) - ranked by KPI count first, then by bestseller rank/Google Trends momentum. The Alibaba/AliExpress columns are a supplier-availability gut-check on top of that - a signal to investigate, not an auto-buy decision.</p>
-{% if top_picks.passed %}
-  {{ picks_table(top_picks.passed, top_picks.passed[0].score, "") }}
-{% else %}
-  <p>No products passed the {{ min_kpis }}/13 KPI bar today - check the Amazon source status below (a source outage means fewer candidates to score, not that nothing qualified).</p>
-{% endif %}
+  {% macro picks_table(picks, base_score, row_class) %}
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>#</th><th>Product</th><th>KPIs</th><th class="num">Momentum</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr></thead>
+    <tbody>
+    {% for pick in picks %}
+    <tr class="{{ row_class }}">
+      <td>{{ loop.index }}</td>
+      <td>{{ pick.title }}</td>
+      <td>
+        <span class="badge kpi">{{ pick.kpi.count }}/13</span>
+        {% if pick.kpi.source != 'llm' %}<span class="status error">(fallback)</span>{% endif %}<br>
+        {% for k in pick.kpi.matched %}<span class="badge">{{ k }}</span>{% endfor %}
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: {{ (pick.score * 100 / base_score) | round(0, 'floor') }}%; display:block;"></span></span>{{ pick.score }}
+      </td>
+      <td>{% for s in pick.sources %}<span class="badge">{{ s }}</span>{% endfor %}</td>
+      <td>{% if pick.trend_match %}<span class="badge trend">{{ pick.trend_match }}</span>{% else %}—{% endif %}</td>
+      <td>{{ sourcing_badge(pick.sourcing.alibaba if pick.sourcing else none) }}</td>
+      <td>{{ sourcing_badge(pick.sourcing.aliexpress if pick.sourcing else none) }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endmacro %}
 
-{% if top_picks.near_misses %}
-<h2>Near misses - did NOT pass the {{ min_kpis }}/13 bar</h2>
-<p class="muted">Only {{ top_picks.passed|length }} product(s) cleared the rubric today, so these {{ top_picks.near_misses|length }} are backfilled from the same judged pool to round the list out to {{ top_picks.passed|length + top_picks.near_misses|length }} - they scored below {{ min_kpis }}/13 and did <strong>not</strong> pass. Treat this section as "worth a second look," not a recommendation.</p>
-{{ picks_table(top_picks.near_misses, top_picks.near_misses[0].score, "near-miss") }}
-{% endif %}
+  <h2><span class="num">01</span>Today's picks</h2>
+  <p class="section-note">Every candidate is scored against the 13-point dropship rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) — ranked by KPI count first, then bestseller rank/Google Trends momentum. Alibaba/AliExpress columns are a supplier-availability gut-check, not an auto-buy signal.</p>
 
-<h2>Google Trends - India (today)</h2>
-<div class="trend-terms">
-  {% for term in trending_terms %}<span>{{ term }}</span>{% else %}<span class="error">Google Trends fetch failed today.</span>{% endfor %}
+  {% if top_picks.passed %}
+    {{ picks_table(top_picks.passed, top_picks.passed[0].score, "") }}
+  {% endif %}
+
+  {% if top_picks.near_misses %}
+    <h3>Near misses — did NOT pass the {{ min_kpis }}/13 bar</h3>
+    <p class="section-note">Backfilled from the same judged pool so the report still shows {{ top_picks.passed|length + top_picks.near_misses|length }} rows even though only {{ top_picks.passed|length }} genuinely cleared the rubric. Worth a second look, not a recommendation.</p>
+    {{ picks_table(top_picks.near_misses, top_picks.near_misses[0].score, "near-miss") }}
+  {% endif %}
+
+  <h2><span class="num">02</span>Google Trends — India, today</h2>
+  <p class="section-note">General public-interest search trends (news, cricket, celebrities), not shopping-specific — used only as a small momentum bonus when a product title happens to overlap with one of these terms.</p>
+  <div class="trend-terms">
+    {% for term in trending_terms %}<span>{{ term }}</span>{% else %}<span class="status error">Google Trends fetch failed today.</span>{% endfor %}
+  </div>
+
+  <h2><span class="num">03</span>Source health</h2>
+  <p class="section-note">Raw per-source scrape results behind today's picks. "utility" = Amazon bestseller category pages; "novelty/gift/decor" = Amazon keyword search, which has genuine (intermittent) Akamai anti-bot protection, so an occasional failed keyword here is expected, not a regression.</p>
+
+  <h3>Amazon.in bestsellers — utility archetype</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Category</th><th>Status</th><th class="num">Products</th></tr></thead>
+    <tbody>
+    {% for result in amazon_results %}
+      <tr>
+        <td>{{ result.category }}</td>
+        <td>{% if result.error %}<span class="status error" title="{{ result.error }}">error</span>{% else %}<span class="status ok">ok</span>{% endif %}</td>
+        <td class="num">{{ result.products|length }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  {% if amazon_search_results %}
+  <h3>Amazon.in search — novelty/gift/decor archetype</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Keyword</th><th>Status</th><th class="num">Products</th></tr></thead>
+    <tbody>
+    {% for result in amazon_search_results %}
+      <tr>
+        <td>"{{ result.keyword }}"</td>
+        <td>{% if result.error %}<span class="status error" title="{{ result.error }}">error</span>{% else %}<span class="status ok">ok</span>{% endif %}</td>
+        <td class="num">{{ result.products|length }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endif %}
+
+  {% macro keyword_status_table(title, results) %}
+  {% if results %}
+  <h3>{{ title }}</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Keyword</th><th>Status</th><th class="num">Products</th></tr></thead>
+    <tbody>
+    {% for result in results %}
+      <tr>
+        <td>"{{ result.keyword }}"</td>
+        <td>{% if result.error %}<span class="status error" title="{{ result.error }}">error</span>{% else %}<span class="status ok">ok</span>{% endif %}</td>
+        <td class="num">{{ result.products|length }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endif %}
+  {% endmacro %}
+
+  {{ keyword_status_table("Flipkart", flipkart_results) }}
+  {{ keyword_status_table("Meesho", meesho_results) }}
+  {{ keyword_status_table("Myntra", myntra_results) }}
+  {{ keyword_status_table("Snapdeal", snapdeal_results) }}
+
+  <footer>
+    <p><strong>Methodology &amp; caveats:</strong> Amazon bestseller pages cover the "utility, solves one annoyance" archetype; Amazon's regular keyword search (a fixed watchlist of known-viral terms) covers "novelty/gift/room-decor" instead, since Amazon.in has no bestseller page for those subcategories. Neither has an official trending-products API, so either can break silently if Amazon changes its layout. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs — their tables above simply won't appear while disabled. "Picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by the 13-KPI rubric judged per-candidate by Gemini, capped at 20 requests/day (free tier) — which is why the candidate pool and category/keyword lists are sized to fit that ceiling rather than maximize scrape volume. The Alibaba/AliExpress columns only confirm a matching listing exists and shares words with the query — not price, MOQ, or seller reliability, so vet a supplier manually before committing.</p>
+  </footer>
+
 </div>
-
-<h2>Amazon.in bestsellers by category</h2>
-{% for result in amazon_results %}
-  <h3>{{ result.category }}
-    {% if result.error %}<span class="error">- {{ result.error }}</span>{% else %}<span class="ok">- ok</span>{% endif %}
-  </h3>
-  {% if result.products %}
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    {% for item in result.products %}
-    <tr><td>{{ item.rank }}</td><td>{{ item.title }}</td></tr>
-    {% endfor %}
-  </table>
-  {% endif %}
-{% endfor %}
-
-{% macro keyword_source_section(title, note, results) %}
-{% if results %}
-<h2>{{ title }}</h2>
-<p class="muted">{{ note }}</p>
-{% for result in results %}
-  <h3>"{{ result.keyword }}"
-    {% if result.error %}<span class="error">- {{ result.error }}</span>{% else %}<span class="ok">- ok</span>{% endif %}
-  </h3>
-  {% if result.products %}
-  <table>
-    <tr><th>Rank</th><th>Title</th></tr>
-    {% for item in result.products %}
-    <tr><td>{{ item.rank }}</td><td>{{ item.title }}</td></tr>
-    {% endfor %}
-  </table>
-  {% endif %}
-{% endfor %}
-{% endif %}
-{% endmacro %}
-
-{{ keyword_source_section(
-  "Amazon.in search - novelty/gift/decor archetype",
-  "Amazon.in has no bestseller page for decor/lighting/gift subcategories, so this searches directly for known-viral terms instead of scraping a category list. Occasional per-keyword failures are Amazon's Akamai anti-bot challenge (intermittent, not a parsing bug).",
-  amazon_search_results
-) }}
-
-{# Flipkart/Meesho/Myntra/Snapdeal are disabled in config.ENABLED_SOURCES (403s/timeouts
-   confirmed even from GitHub Actions cloud IPs - an IP/ASN-level block, not a parsing
-   problem), so generate_report.py passes empty lists for them and these sections simply
-   don't render. Flip a flag back to True in config.py to bring a section back with no
-   template changes needed. #}
-{{ keyword_source_section(
-  "Flipkart - popularity search by keyword",
-  "No dedicated bestseller page on Flipkart, so this approximates it via popularity-sorted search - cross-check before trusting on its own.",
-  flipkart_results
-) }}
-
-{{ keyword_source_section(
-  "Meesho - search by keyword",
-  "Best-effort scrape of a JS-heavy storefront - check the ok/error status per keyword before trusting a day's results.",
-  meesho_results
-) }}
-
-{{ keyword_source_section(
-  "Myntra - search by keyword (fashion)",
-  "Fashion-only catalog, so this uses its own keyword list rather than the general one. Best-effort scrape of a JS-heavy storefront.",
-  myntra_results
-) }}
-
-{{ keyword_source_section(
-  "Snapdeal - search by keyword",
-  "Best-effort scrape of a JS-heavy storefront - check the ok/error status per keyword before trusting a day's results.",
-  snapdeal_results
-) }}
-
-<footer>
-  <p><strong>Methodology &amp; caveats:</strong> Amazon bestseller pages cover the "utility, solves one annoyance" archetype; Amazon's regular keyword search (a fixed watchlist of known-viral terms, config.FUN_PRODUCT_KEYWORDS) covers the "novelty/gift/room-decor" archetype instead, since Amazon.in has no bestseller page for decor/lighting/gift subcategories. Neither has an official trending-products API, so either can break silently if Amazon changes its layout - check the "ok"/error status per section above before trusting a day's report; the search endpoint specifically has real (intermittent) Akamai anti-bot protection, so an occasional per-keyword failure there is expected, not a regression. Google Trends uses its public RSS feed. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (see config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs. "Top picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by a 13-KPI rubric judged per-candidate by Gemini (with a keyword-based fallback, flagged inline, if the judge call fails). The judge call count is capped daily by the Gemini free-tier quota (20 requests/day), which is why the candidate pool and category/keyword list are deliberately sized to fit that ceiling rather than maximizing scrape volume. The Alibaba/AliExpress columns only confirm a matching wholesale/dropship listing exists somewhere and shares words with the query - they don't check price, MOQ, or seller reliability, so still vet a supplier manually before committing.</p>
-</footer>
-
 </body>
 </html>
