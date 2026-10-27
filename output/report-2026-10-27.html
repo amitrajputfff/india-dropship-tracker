@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>India Dropship Tracker — 2026-10-27</title>
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --bg-raised: #ffffff;
+    --ink: #1c1a17;
+    --ink-dim: #5c5750;
+    --line: #ddd8cd;
+    --line-soft: #eae6db;
+    --accent: #a8481f;
+    --accent-soft: #f1e2d7;
+
+    --good: #2c7a4a;
+    --good-soft: #e2efe4;
+    --warn: #a3760f;
+    --warn-soft: #f4ead0;
+    --bad: #b23b2e;
+    --bad-soft: #f7e3df;
+
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #17140f;
+    --bg-raised: #201c16;
+    --ink: #ece7dc;
+    --ink-dim: #a79f8f;
+    --line: #3a352b;
+    --line-soft: #2a2620;
+    --accent: #e08a4f;
+    --accent-soft: #3a2a1c;
+
+    --good: #6fbf8c;
+    --good-soft: #1e3326;
+    --warn: #dcb559;
+    --warn-soft: #3a3120;
+    --bad: #e2776b;
+    --bad-soft: #3a231f;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17140f;
+      --bg-raised: #201c16;
+      --ink: #ece7dc;
+      --ink-dim: #a79f8f;
+      --line: #3a352b;
+      --line-soft: #2a2620;
+      --accent: #e08a4f;
+      --accent-soft: #3a2a1c;
+
+      --good: #6fbf8c;
+      --good-soft: #1e3326;
+      --warn: #dcb559;
+      --warn-soft: #3a3120;
+      --bad: #e2776b;
+      --bad-soft: #3a231f;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 28px 96px; }
+
+  header.doc-head {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    font-family: var(--mono);
+  }
+  .doc-meta strong { color: var(--ink); font-weight: 600; }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 56px 0 6px;
+    letter-spacing: -0.005em;
+  }
+  h2 .num { color: var(--ink-dim); font-family: var(--mono); font-size: 15px; margin-right: 10px; font-weight: 500; }
+  .section-note {
+    color: var(--ink-dim);
+    font-size: 14px;
+    max-width: 68ch;
+    margin: 0 0 22px;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 34px 0 12px;
+  }
+
+  p { max-width: 68ch; }
+  code {
+    font-family: var(--mono);
+    background: var(--line-soft);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+
+  .table-scroll { overflow-x: auto; margin: 4px 0 28px; border: 1px solid var(--line); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; background: var(--bg-raised); font-size: 13.8px; }
+  thead th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 600;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  tbody tr.near-miss td { opacity: 0.72; }
+
+  .product-link { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .product-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--line-soft);
+    color: var(--ink-dim);
+    margin: 0 5px 5px 0;
+    white-space: nowrap;
+  }
+  .badge.kpi { background: var(--accent-soft); color: var(--accent); }
+  .badge.trend { background: var(--warn-soft); color: var(--warn); }
+  .badge.sourcing-yes { background: var(--good-soft); color: var(--good); }
+  .badge.sourcing-no { background: var(--bad-soft); color: var(--bad); }
+  .badge.sourcing-unknown { background: var(--line-soft); color: var(--ink-dim); }
+
+  .status { font-family: var(--mono); font-size: 12px; font-weight: 600; }
+  .status.ok { color: var(--good); }
+  .status.error { color: var(--bad); }
+
+  .score-bar-wrap { background: var(--line-soft); border-radius: 4px; width: 90px; height: 8px; display: inline-block; overflow: hidden; vertical-align: middle; margin-right: 6px; }
+  .score-bar { background: var(--good); height: 100%; }
+  tr.near-miss .score-bar { background: var(--ink-dim); }
+
+  .trend-terms span {
+    display: inline-block;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    padding: 4px 12px;
+    border-radius: 14px;
+    margin: 0 8px 8px 0;
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+
+  .callout {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    max-width: none;
+  }
+  .callout strong { color: var(--accent); }
+  .callout.bad { background: var(--bad-soft); }
+  .callout.bad strong { color: var(--bad); }
+  .callout.good { background: var(--good-soft); }
+  .callout.good strong { color: var(--good); }
+  .callout.warn { background: var(--warn-soft); }
+  .callout.warn strong { color: var(--warn); }
+  .callout p { margin: 6px 0 0; max-width: none; }
+  .callout p:first-child { margin-top: 0; }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-dim);
+    font-size: 12.5px;
+    font-family: var(--mono);
+  }
+  footer p { max-width: none; }
+
+  @media (max-width: 720px) {
+    h1 { font-size: 27px; }
+    .doc-meta { gap: 10px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc-head">
+    <p class="eyebrow">India Dropship Tracker — Daily Report</p>
+    <h1>
+      
+        5 products cleared today's 7/13 dropship bar
+      
+    </h1>
+    <div class="doc-meta">
+      <span><strong>Generated:</strong> 2026-10-27</span>
+      <span><strong>Passed:</strong> 5</span>
+      <span><strong>Near-miss backfill:</strong> 5</span>
+      <span><strong>Candidates judged:</strong> 60</span>
+      <span><strong>Excluded as brand:</strong> 9</span>
+      
+    </div>
+  </header>
+
+  
+  <div class="callout good">
+    <strong>Every candidate today got a real LLM judgment</strong> — no exclusions due to provider failures.
+  </div>
+  
+
+  
+
+  
+
+  <h2><span class="num">01</span>Today's picks</h2>
+  <p class="section-note">Every candidate is scored against the 13-point dropship rubric (small/easy to ship, high margin, proof of concept, solves a real problem, saves time/money, unique, improves confidence/convenience/quality of life, high perceived value, woman-dominated audience) — ranked by KPI count first, then bestseller rank/Google Trends momentum. Alibaba/AliExpress columns are a supplier-availability gut-check, not an auto-buy signal.</p>
+
+  
+    
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>#</th><th>Product</th><th>KPIs</th><th class="num">Momentum</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr></thead>
+    <tbody>
+    
+    <tr class="">
+      <td>1</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B0DZ2K8575/" target="_blank" rel="noopener noreferrer">All Out Mosquito Kill Racquet | 2X Faster Charging* | Mosquito Bat | Racket to Kill Mosquitoes Instantly | 6 Months Warranty</a></td>
+      <td>
+        <span class="badge kpi">7/13</span><br>
+        <span class="badge">Small in size</span><span class="badge">Easy to ship</span><span class="badge">Improves convenience</span><span class="badge">Saves people time</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">Improves quality of life</span><span class="badge">High perceived value</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>0.33
+      </td>
+      <td><span class="badge">Amazon.in - Garden & Outdoors</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown" title="No relevant listings found - Alibaba may have blocked the request, changed page layout, or genuinely has nothing matching.">blocked/unknown</span></td>
+      <td><span class="badge sourcing-yes" title="Electric Mosquito Swatter Cordless Battery Power Electric Fly Mosquito Swatter Bug  Racket Insects Killer | Mosquito Killer Triple  Battery Power Fly Swatter Pest  Electric Repeller Bug  Racket Wireless Long Handle Tool">found</span></td>
+    </tr>
+    
+    <tr class="">
+      <td>2</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B0FS1VB862/" target="_blank" rel="noopener noreferrer">ShineXPro Microfiber Cleaning Cloth Roll, 20Pcs, 4000 Times Washable - 10X Cheaper Than Paper Kitchen Towel Roll - Ultra Abso</a></td>
+      <td>
+        <span class="badge kpi">7/13</span><br>
+        <span class="badge">Small in size</span><span class="badge">Easy to ship</span><span class="badge">Improves convenience</span><span class="badge">Saves people money</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">Saves people time</span><span class="badge">Improves quality of life</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>0.33
+      </td>
+      <td><span class="badge">Amazon.in - Home Improvement</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown" title="No relevant listings found - Alibaba may have blocked the request, changed page layout, or genuinely has nothing matching.">blocked/unknown</span></td>
+      <td><span class="badge sourcing-yes" title="5Results for ShineXPro Microfiber Cleaning Cloth Roll | Results for ShineXPro Microfiber Cleaning Cloth Roll | 5/50PCS Melamine Sponge Magic Sponge Eraser Melamine Sponge Cleaner Cleaning Sponges for Kitchen Bathroom Cleaning Tools">found</span></td>
+    </tr>
+    
+    <tr class="">
+      <td>3</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B0G352HJMS/" target="_blank" rel="noopener noreferrer">ZoTronico LED Portable Mini Projector</a></td>
+      <td>
+        <span class="badge kpi">7/13</span><br>
+        <span class="badge">Small in size</span><span class="badge">Easy to ship</span><span class="badge">Improves convenience</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">Improves quality of life</span><span class="badge">High perceived value</span><span class="badge">Saves people money</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>0.33
+      </td>
+      <td><span class="badge">Amazon Search - "mini handheld projector"</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown" title="No relevant listings found - Alibaba may have blocked the request, changed page layout, or genuinely has nothing matching.">blocked/unknown</span></td>
+      <td><span class="badge sourcing-yes" title="4.4Results for ZoTronico LED Portable Mini Projector | Results for ZoTronico LED Portable Mini Projector | Helpful reviews about ZoTronico LED Portable Mini Projector">found</span></td>
+    </tr>
+    
+    <tr class="">
+      <td>4</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B0FD9T4NPJ/" target="_blank" rel="noopener noreferrer">Desidiya® 16-Color LED Night Light Sunset Lamp with Remote & USB – 360° Rotating Projection Light for Room Ambience, Wall Decor, Photography & Mood Lighting</a></td>
+      <td>
+        <span class="badge kpi">7/13</span><br>
+        <span class="badge">Easy to ship</span><span class="badge">High perceived value</span><span class="badge">Improves quality of life</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">Proof of concept from past winners</span><span class="badge">Improves convenience</span><span class="badge">Woman-dominated audience</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 60.0%; display:block;"></span></span>0.2
+      </td>
+      <td><span class="badge">Amazon Search - "sunset lamp"</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown" title="No relevant listings found - Alibaba may have blocked the request, changed page layout, or genuinely has nothing matching.">blocked/unknown</span></td>
+      <td><span class="badge sourcing-yes" title="Results for Desidiya® 16-Color LED Night Light Sunset | Shop the latest Desidiya® 16-Color LED Night Light Sunset deals on AliExpress">found</span></td>
+    </tr>
+    
+    <tr class="">
+      <td>5</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B07WQJLYQM/" target="_blank" rel="noopener noreferrer">HIT Crawling Insect Killer Cockroach Killer Spray | Instant Kill | Deep-Reach Nozzle | Fresh Fragrance, 700ml</a></td>
+      <td>
+        <span class="badge kpi">7/13</span><br>
+        <span class="badge">Easy to ship</span><span class="badge">Improves confidence</span><span class="badge">Improves convenience</span><span class="badge">Saves people time</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">Saves people money</span><span class="badge">Improves quality of life</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 51.0%; display:block;"></span></span>0.17
+      </td>
+      <td><span class="badge">Amazon.in - Garden & Outdoors</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown" title="No relevant listings found - Alibaba may have blocked the request, changed page layout, or genuinely has nothing matching.">blocked/unknown</span></td>
+      <td><span class="badge sourcing-yes" title="Sorry, your search "HIT Crawling Insect Killer Cockroach Killer" did not match any products. Please try again.">found</span></td>
+    </tr>
+    
+    </tbody>
+  </table>
+  </div>
+  
+  
+
+  
+    <h3>Near misses — did NOT pass the 7/13 bar</h3>
+    <p class="section-note">Backfilled from the same judged pool so the report still shows 10 rows even though only 5 genuinely cleared the rubric. Worth a second look, not a recommendation.</p>
+    
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>#</th><th>Product</th><th>KPIs</th><th class="num">Momentum</th><th>Seen on</th><th>Trend match</th><th>Alibaba</th><th>AliExpress</th></tr></thead>
+    <tbody>
+    
+    <tr class="near-miss">
+      <td>1</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B0GNZV9K7F/" target="_blank" rel="noopener noreferrer">MARETTO Men’s Genuine Leather Wallet with Card Holder & Coin Pocket – Stylish Bifold Slim Wallet with Multiple Compartments f</a></td>
+      <td>
+        <span class="badge kpi">6/13</span><br>
+        <span class="badge">Small in size</span><span class="badge">Easy to ship</span><span class="badge">Improves convenience</span><span class="badge">Saves people time</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">High perceived value</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 100.0%; display:block;"></span></span>1.07
+      </td>
+      <td><span class="badge">Amazon.in - Luggage & Bags</span></td>
+      <td><span class="badge trend">aadhar card</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>2</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B077BFH786/" target="_blank" rel="noopener noreferrer">SOFTSPUN Microfiber Cloth - 4 pcs - 40x40 cms - 340 GSM Grey! Thick Lint & Streak-Free Multipurpose Cloths - Automotive Micro</a></td>
+      <td>
+        <span class="badge kpi">6/13</span><br>
+        <span class="badge">Small in size</span><span class="badge">Easy to ship</span><span class="badge">Improves convenience</span><span class="badge">Saves people time</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">Saves people money</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 93.0%; display:block;"></span></span>1.0
+      </td>
+      <td><span class="badge">Amazon.in - Car & Motorbike</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>3</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B0FP4S4JX2/" target="_blank" rel="noopener noreferrer">Kleenest Magic Eraser Cleaning Sponge – Pack of 4, Chemical-Free | Multi-purpose stain remover for walls, kitchen, bathroom &</a></td>
+      <td>
+        <span class="badge kpi">6/13</span><br>
+        <span class="badge">Small in size</span><span class="badge">Easy to ship</span><span class="badge">Improves convenience</span><span class="badge">Saves people time</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">Saves people money</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 46.0%; display:block;"></span></span>0.5
+      </td>
+      <td><span class="badge">Amazon.in - Home Improvement</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>4</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B0B772BQ9P/" target="_blank" rel="noopener noreferrer">Qpets® 3L  Automatic Cat Feeder WiFi App Control 110 Meals 31x19.81x19.8cm</a></td>
+      <td>
+        <span class="badge kpi">6/13</span><br>
+        <span class="badge">Easy to ship</span><span class="badge">Improves convenience</span><span class="badge">Saves people time</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">Improves quality of life</span><span class="badge">High perceived value</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 30.0%; display:block;"></span></span>0.33
+      </td>
+      <td><span class="badge">Amazon Search - "pet camera treat dispenser"</span></td>
+      <td>—</td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    <tr class="near-miss">
+      <td>5</td>
+      <td><a class="product-link" href="https://www.amazon.in/dp/B079TN3GCD/" target="_blank" rel="noopener noreferrer">WildHorn Genuine Leather Wallet for Men | Slim Bifold Wallet with RFID Blocking | Multiple Card Slots & Coin Pocket | Premium</a></td>
+      <td>
+        <span class="badge kpi">5/13</span><br>
+        <span class="badge">Small in size</span><span class="badge">Easy to ship</span><span class="badge">Improves convenience</span><span class="badge">Solves a real problem / fills a gap</span><span class="badge">High perceived value</span>
+      </td>
+      <td class="num">
+        <span class="score-bar-wrap"><span class="score-bar" style="width: 103.0%; display:block;"></span></span>1.11
+      </td>
+      <td><span class="badge">Amazon.in - Luggage & Bags</span></td>
+      <td><span class="badge trend">aadhar card</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+      <td><span class="badge sourcing-unknown">not checked</span></td>
+    </tr>
+    
+    </tbody>
+  </table>
+  </div>
+  
+  
+
+  <h2><span class="num">02</span>Google Trends — India, today</h2>
+  <p class="section-note">General public-interest search trends (news, cricket, celebrities), not shopping-specific — used only as a small momentum bonus when a product title happens to overlap with one of these terms.</p>
+  <div class="trend-terms">
+    <span>nz vs ind</span><span>राशन-व्यवस्था</span><span>रोहित शर्मा</span><span>aadhar card</span><span>ಭವಿಷ್ಯ</span><span>उदय कोटक</span><span>cloud ai</span><span>sayaji shinde</span><span>mlc voter registration</span><span>cloude ai</span>
+  </div>
+
+  <h2><span class="num">03</span>Source health</h2>
+  <p class="section-note">Raw per-source scrape results behind today's picks. "utility" = Amazon bestseller category pages; "novelty/gift/decor" = Amazon keyword search, which has genuine (intermittent) Akamai anti-bot protection, so an occasional failed keyword here is expected, not a regression.</p>
+
+  <h3>Amazon.in bestsellers — utility archetype</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Category</th><th>Status</th><th class="num">Products</th></tr></thead>
+    <tbody>
+    
+      <tr>
+        <td>Kitchen & Home</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">15</td>
+      </tr>
+    
+      <tr>
+        <td>Home Improvement</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">16</td>
+      </tr>
+    
+      <tr>
+        <td>Beauty</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">16</td>
+      </tr>
+    
+      <tr>
+        <td>Toys & Games</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">16</td>
+      </tr>
+    
+      <tr>
+        <td>Sports & Fitness</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">16</td>
+      </tr>
+    
+      <tr>
+        <td>Pet Supplies</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">2</td>
+      </tr>
+    
+      <tr>
+        <td>Car & Motorbike</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">18</td>
+      </tr>
+    
+      <tr>
+        <td>Garden & Outdoors</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">17</td>
+      </tr>
+    
+      <tr>
+        <td>Luggage & Bags</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">19</td>
+      </tr>
+    
+    </tbody>
+  </table>
+  </div>
+
+  
+  <h3>Amazon.in search — novelty/gift/decor archetype</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Keyword</th><th>Status</th><th class="num">Products</th></tr></thead>
+    <tbody>
+    
+      <tr>
+        <td>"galaxy projector"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">2</td>
+      </tr>
+    
+      <tr>
+        <td>"sunset lamp"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">19</td>
+      </tr>
+    
+      <tr>
+        <td>"led fairy lights"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">18</td>
+      </tr>
+    
+      <tr>
+        <td>"designer diya lights"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">20</td>
+      </tr>
+    
+      <tr>
+        <td>"oxidised jewellery earrings"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">11</td>
+      </tr>
+    
+      <tr>
+        <td>"portable misting fan"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">4</td>
+      </tr>
+    
+      <tr>
+        <td>"mini handheld projector"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">11</td>
+      </tr>
+    
+      <tr>
+        <td>"pet camera treat dispenser"</td>
+        <td><span class="status ok">ok</span></td>
+        <td class="num">19</td>
+      </tr>
+    
+    </tbody>
+  </table>
+  </div>
+  
+
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  <footer>
+    <p><strong>Methodology &amp; caveats:</strong> Amazon bestseller pages cover the "utility, solves one annoyance" archetype; Amazon's regular keyword search (a fixed watchlist of known-viral terms) covers "novelty/gift/room-decor" instead, since Amazon.in has no bestseller page for those subcategories. Neither has an official trending-products API, so either can break silently if Amazon changes its layout. Flipkart/Meesho/Myntra/Snapdeal are currently disabled (config.ENABLED_SOURCES) after confirming they're blocked even from cloud IPs — their tables above simply won't appear while disabled. "Picks" scoring is a heuristic (bestseller rank + Google Trends token overlap), gated by the 13-KPI rubric judged per-candidate by a real LLM (Cerebras primary, Gemini as a secondary check) — there is no keyword-approximation fallback; a candidate neither provider can judge is excluded entirely rather than scored approximately. The Alibaba/AliExpress columns only confirm a matching listing exists and shares words with the query — not price, MOQ, or seller reliability, so vet a supplier manually before committing.</p>
+  </footer>
+
+</div>
+</body>
+</html>
